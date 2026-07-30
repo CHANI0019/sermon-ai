@@ -11,7 +11,7 @@ export interface ExistentialStruggle {
 }
 
 /**
- * 📚 Project LOGOS: 5대 인간 고뇌 (Existential Struggles) RAG DB & Exegesis Corpus
+ * 📚 LOGOS: 5대 인간 고뇌 (Existential Struggles) RAG DB & Exegesis Corpus
  */
 export const LOGOS_EXISTENTIAL_DB: ExistentialStruggle[] = [
   {

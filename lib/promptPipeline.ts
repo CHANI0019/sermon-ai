@@ -11,7 +11,7 @@ export interface PromptPipelineOptions {
 }
 
 /**
- * 🧱 Project LOGOS: 4-Tier System Prompt Pipeline Generator
+ * 🧱 LOGOS: 4-Tier System Prompt Pipeline Generator
  */
 export class PromptPipelineEngine {
   

@@ -173,10 +173,10 @@ export const NewsSermonView: React.FC<NewsSermonViewProps> = ({ onSaveItem }) =>
             <Newspaper size={24} color="var(--color-primary)" />
             <div>
               <h2 className="serif-text gold-gradient-text" style={{ fontSize: '1.4rem', fontWeight: 700 }}>
-                📰 Project LOGOS AI 시사 뉴스 연계 강단 설교 대본 생성기
+                📰 LOGOS AI 시사 뉴스 연계 강단 설교 대본 생성기
               </h2>
               <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', marginTop: 2 }}>
-                최신 시사 뉴스를 선택하면 Project LOGOS AI가 목사님이 강단에서 선포할 수 있는 실제 설교 대본 풀 텍스트와 음성 낭독을 제공합니다.
+                최신 시사 뉴스를 선택하면 LOGOS AI가 목사님이 강단에서 선포할 수 있는 실제 설교 대본 풀 텍스트와 음성 낭독을 제공합니다.
               </p>
             </div>
           </div>
@@ -291,7 +291,7 @@ export const NewsSermonView: React.FC<NewsSermonViewProps> = ({ onSaveItem }) =>
               <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--color-primary)', padding: 'var(--space-lg)', borderRadius: 'var(--radius-md)', marginBottom: 'var(--space-lg)' }}>
                 <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--color-primary)', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <Mic size={18} /> Project LOGOS AI가 생성한 목사님 시사 연계 강단 선포용 풀 텍스트 설교 대본
+                    <Mic size={18} /> LOGOS AI가 생성한 목사님 시사 연계 강단 선포용 풀 텍스트 설교 대본
                   </div>
                   {isSpeaking && (
                     <span style={{ fontSize: '0.75rem', background: 'var(--color-primary)', color: '#0f172a', padding: '2px 8px', borderRadius: 10, fontWeight: 700 }}>

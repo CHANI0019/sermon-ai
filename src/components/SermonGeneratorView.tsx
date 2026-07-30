@@ -116,7 +116,7 @@ export const SermonGeneratorView: React.FC<SermonGeneratorViewProps> = ({ onSave
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)', marginBottom: 'var(--space-xs)' }}>
           <BookOpen size={24} color="var(--color-primary)" />
           <h2 className="serif-text gold-gradient-text" style={{ fontSize: '1.4rem', fontWeight: 700 }}>
-            📖 Project LOGOS AI: 목회자 강단 선포용 설교 생성기
+            📖 LOGOS AI: 목회자 강단 선포용 설교 생성기
           </h2>
         </div>
         <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>

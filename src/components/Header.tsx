@@ -44,7 +44,7 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
             <div>
               <h1 className="gold-gradient-text" style={{ fontSize: '1.25rem', fontWeight: 700, lineHeight: 1.2 }}>
-                Project LOGOS
+                LOGOS
               </h1>
               <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
                 정통 개혁주의 신학 & 목회 AI 어시스턴트

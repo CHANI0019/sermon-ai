@@ -152,13 +152,13 @@ export const App: React.FC = () => {
       <footer style={{ borderTop: '1px solid var(--color-border)', backgroundColor: 'var(--bg-secondary)', padding: 'var(--space-xl) 0', marginTop: 'var(--space-2xl)' }}>
         <div className="container" style={{ textAlign: 'center', fontSize: '0.85rem', color: 'var(--color-text-muted)', lineHeight: 1.7 }}>
           <p className="serif-text" style={{ color: 'var(--color-text-main)', fontWeight: 600, marginBottom: 'var(--space-xs)' }}>
-            Project LOGOS — 정통 개혁주의 신학 & 실시간 시사 뉴스 연계 목회 AI
+            LOGOS — 정통 개혁주의 신학 & 실시간 시사 뉴스 연계 목회 AI
           </p>
           <p style={{ maxWidth: 720, margin: '0 auto var(--space-md)', fontSize: '0.8rem' }}>
             본 시스템은 성경의 구속사적 전체 맥락(Christ-centered)과 정통 복음주의 신학 고백에 기반합니다. 영적 은혜와 진정한 위로는 성령 하나님의 역사와 성도님이 속하신 지역 교회 공동체를 통해 이루어집니다.
           </p>
           <p style={{ fontSize: '0.75rem', opacity: 0.7 }}>
-            © {new Date().getFullYear()} Project LOGOS System. Real-time RSS News Sermon Generator Ready.
+            © {new Date().getFullYear()} LOGOS System. Real-time RSS News Sermon Generator Ready.
           </p>
         </div>
       </footer>

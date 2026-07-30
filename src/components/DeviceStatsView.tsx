@@ -34,7 +34,7 @@ export const DeviceStatsView: React.FC<DeviceStatsViewProps> = ({ device, onTrig
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)', marginBottom: 'var(--space-xs)' }}>
           <Cpu size={24} color="var(--color-primary)" />
           <h2 className="serif-text gold-gradient-text" style={{ fontSize: '1.4rem', fontWeight: 700 }}>
-            Project LOGOS AI 모델 자동 갱신 & PWA 진단 대시보드
+            LOGOS AI 모델 자동 갱신 & PWA 진단 대시보드
           </h2>
         </div>
         <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
@@ -48,7 +48,7 @@ export const DeviceStatsView: React.FC<DeviceStatsViewProps> = ({ device, onTrig
         <div className="glass-panel" style={{ padding: 'var(--space-lg)', borderTop: '3px solid var(--color-primary)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-md)' }}>
             <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--color-primary)', display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Server size={18} /> Project LOGOS AI 모델 자동 갱신
+              <Server size={18} /> LOGOS AI 모델 자동 갱신
             </h3>
             <span style={{ fontSize: '0.7rem', background: 'var(--color-primary-light)', color: 'var(--color-primary)', padding: '2px 8px', borderRadius: 4, fontWeight: 600 }}>
               Auto-Sync Ready

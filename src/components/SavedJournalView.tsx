@@ -27,7 +27,7 @@ export const SavedJournalView: React.FC<SavedJournalViewProps> = ({ savedItems, 
           </h2>
         </div>
         <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
-          Project LOGOS에서 작성한 설교 구상 및 목회 상담 묵상 기록을 보관하고 복습합니다.
+          LOGOS에서 작성한 설교 구상 및 목회 상담 묵상 기록을 보관하고 복습합니다.
         </p>
       </div>
 

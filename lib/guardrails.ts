@@ -12,7 +12,7 @@ export interface TheologicalValidationResult {
 }
 
 /**
- * 🛡️ Project LOGOS Guardrail System (Level 1 Regex + Level 2 Crisis Hotline Interceptor)
+ * 🛡️ LOGOS Guardrail System (Level 1 Regex + Level 2 Crisis Hotline Interceptor)
  */
 export class LogosGuardrailService {
   // Level 1: Banned Theological Patterns (Prosperity Gospel, Heresies, Fatalism)

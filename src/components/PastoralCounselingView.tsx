@@ -96,7 +96,7 @@ export const PastoralCounselingView: React.FC<PastoralCounselingViewProps> = ({ 
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)', marginBottom: 'var(--space-xs)' }}>
           <HeartHandshake size={24} color="var(--color-accent)" />
           <h2 className="serif-text" style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--color-text-main)' }}>
-            🕊️ Project LOGOS: 4단계 대화형 목회 상담
+            🕊️ LOGOS: 4단계 대화형 목회 상담
           </h2>
         </div>
         <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
