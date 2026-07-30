@@ -536,7 +536,7 @@ export const SvsPraiseView: React.FC<SvsPraiseViewProps> = ({
       {/* SUB TAB 1: AI 찬양 스튜디오 (Generator) */}
       {/* ------------------------------------------------------------- */}
       {subTab === 'generator' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))', gap: '24px' }}>
           {/* Left Column: 5대 가창 표현력 Controls */}
           <div
             style={{

@@ -238,3 +238,23 @@ html, body {
 .animate-pulse-gold {
   animation: pulseGold 2s infinite;
 }
+
+/* Mobile Responsive Enhancements (No Horizontal Clipping) */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 10px !important;
+  }
+
+  header div {
+    max-width: 100%;
+  }
+
+  nav {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  nav::-webkit-scrollbar {
+    display: none;
+  }
+}

@@ -83,39 +83,39 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Navigation Tabs */}
-        <nav style={{ display: 'flex', gap: 'var(--space-xs)', overflowX: 'auto', paddingBottom: 2 }}>
+        <nav style={{ display: 'flex', gap: 'var(--space-xs)', overflowX: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', paddingBottom: 4 }}>
           <button
             onClick={() => setActiveTab('sermon')}
             className={activeTab === 'sermon' ? 'btn-primary' : 'btn-secondary'}
-            style={{ flex: 1, minWidth: 110, fontSize: '0.85rem' }}
+            style={{ flexShrink: 0, fontSize: '0.85rem', whiteSpace: 'nowrap' }}
           >
             <BookOpen size={16} /> 📖 3대지 설교
           </button>
           <button
             onClick={() => setActiveTab('news_sermon')}
             className={activeTab === 'news_sermon' ? 'btn-primary' : 'btn-secondary'}
-            style={{ flex: 1, minWidth: 125, fontSize: '0.85rem' }}
+            style={{ flexShrink: 0, fontSize: '0.85rem', whiteSpace: 'nowrap' }}
           >
             <Newspaper size={16} /> 📰 실시간 뉴스 설교
           </button>
           <button
             onClick={() => setActiveTab('counseling')}
             className={activeTab === 'counseling' ? 'btn-primary' : 'btn-secondary'}
-            style={{ flex: 1, minWidth: 110, fontSize: '0.85rem' }}
+            style={{ flexShrink: 0, fontSize: '0.85rem', whiteSpace: 'nowrap' }}
           >
             <HeartHandshake size={16} /> 🕊️ 목회 상담
           </button>
           <button
             onClick={() => setActiveTab('svs_praise')}
             className={activeTab === 'svs_praise' ? 'btn-primary' : 'btn-secondary'}
-            style={{ flex: 1, minWidth: 120, fontSize: '0.85rem' }}
+            style={{ flexShrink: 0, fontSize: '0.85rem', whiteSpace: 'nowrap' }}
           >
             <Music size={16} /> 🎵 AI 찬양 (SVS)
           </button>
           <button
             onClick={() => setActiveTab('journal')}
             className={activeTab === 'journal' ? 'btn-primary' : 'btn-secondary'}
-            style={{ flex: 1, minWidth: 105, fontSize: '0.85rem', position: 'relative' }}
+            style={{ flexShrink: 0, fontSize: '0.85rem', whiteSpace: 'nowrap', position: 'relative' }}
           >
             <Bookmark size={16} /> 📚 묵상 저널
             {savedCount > 0 && (
@@ -127,14 +127,14 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={() => setActiveTab('guardrails')}
             className={activeTab === 'guardrails' ? 'btn-primary' : 'btn-secondary'}
-            style={{ flex: 1, minWidth: 100, fontSize: '0.85rem' }}
+            style={{ flexShrink: 0, fontSize: '0.85rem', whiteSpace: 'nowrap' }}
           >
             <ShieldCheck size={16} /> 🛡️ 신학 검증
           </button>
           <button
             onClick={() => setActiveTab('stats')}
             className={activeTab === 'stats' ? 'btn-primary' : 'btn-secondary'}
-            style={{ flex: 1, minWidth: 95, fontSize: '0.85rem' }}
+            style={{ flexShrink: 0, fontSize: '0.85rem', whiteSpace: 'nowrap' }}
           >
             <Cpu size={16} /> PWA/기기
           </button>
