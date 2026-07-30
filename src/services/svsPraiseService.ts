@@ -338,6 +338,13 @@ function playFemaleSopranoVocalSynth(
   if (!AudioContextClass) return;
 
   audioCtx = new AudioContextClass();
+  if (audioCtx.state === 'suspended') {
+    try {
+      audioCtx.resume();
+    } catch (e) {
+      // Mobile audio context resume fallback
+    }
+  }
   const now = audioCtx.currentTime;
   let timeOffset = 0;
 
