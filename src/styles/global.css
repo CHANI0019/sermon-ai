@@ -241,8 +241,41 @@ html, body {
 
 /* Mobile Responsive Enhancements (No Horizontal Clipping) */
 @media (max-width: 768px) {
+  :root {
+    --space-lg: 14px;
+    --space-xl: 18px;
+    --space-2xl: 24px;
+  }
+
+  body {
+    font-size: 15px;
+  }
+
   .container {
-    padding: 0 10px !important;
+    padding: 0 8px !important;
+    max-width: 100% !important;
+    overflow-x: hidden;
+  }
+
+  .glass-panel {
+    padding: 14px 12px !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* Force all multi-column grids to stack 100% full-width on mobile */
+  div[style*="gridTemplateColumns"],
+  div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Prevent headings and text from causing horizontal overflow */
+  h1, h2, h3, h4, h5, h6, p, span, div {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
   }
 
   header div {
