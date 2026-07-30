@@ -8,6 +8,14 @@ export interface NewsItem {
   source: string;
 }
 
+export interface TrendingTopicItem {
+  id: string;
+  keyword: string;
+  category: 'IT/AI' | '사회/문화' | '경제/금융' | '세계/국제';
+  sourceNewsTitle: string;
+  summary: string;
+}
+
 /**
  * 📰 실시간 시사 뉴스 RSS 파싱 및 동적 업데이트 서비스
  */
@@ -140,4 +148,26 @@ export class NewsRssService {
       pubDate: `오늘 ${timeStr} 갱신`
     }));
   }
+
+  /**
+   * 📰 최근 며칠 간 뉴스에서 가장 핫하게 회자되는 시대적 이슈 주제 키워드 자동 추출
+   */
+  public static async extractTrendingTopicKeywords(): Promise<TrendingTopicItem[]> {
+    const newsItems = await this.fetchLatestNews();
+    return newsItems.map((news, idx) => {
+      // Clean and summarize title into a punchy topic keyword
+      let topic = news.title;
+      if (topic.includes('...')) {
+        topic = topic.split('...')[0].trim();
+      }
+      return {
+        id: `topic-${idx}-${news.id}`,
+        keyword: topic,
+        category: news.category,
+        sourceNewsTitle: news.title,
+        summary: news.description
+      };
+    });
+  }
 }
+

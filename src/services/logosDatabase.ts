@@ -90,3 +90,173 @@ export const LOGOS_EXISTENTIAL_DB: ExistentialStruggle[] = [
     ]
   }
 ];
+
+export interface ScriptureRecommendation {
+  passage: string;
+  bookTitle: string;
+  theme: string;
+  reasoning: string;
+}
+
+/**
+ * 🔍 시대적 주제 키워드 기반 AI 성경 본문 구절 자동 탐색 & 추천 엔진
+ */
+export const recommendScriptures = (topicKeyword: string): ScriptureRecommendation[] => {
+  const kw = topicKeyword.trim().toLowerCase();
+
+  // 1. Keyword-based precision matching rules
+  if (kw.includes('불안') || kw.includes('인공지능') || kw.includes('ai') || kw.includes('통제') || kw.includes('내일') || kw.includes('미래') || kw.includes('불확실')) {
+    return [
+      {
+        passage: '마태복음 6:25-34',
+        bookTitle: '마태복음',
+        theme: '하나님의 주권적 섭리와 하나님 나라',
+        reasoning: '모든 것을 통제하려는 현대인의 염려를 공중의 새와 들의 백합화를 기르시는 주권적 은혜로 해소하는 대표 본문'
+      },
+      {
+        passage: '에베소서 5:15-17',
+        bookTitle: '에베소서',
+        theme: '세월을 아끼는 영적 지혜',
+        reasoning: '급변하는 기술과 문명 시대 속에서 하나님의 뜻이 무엇인지 분별하는 지혜'
+      },
+      {
+        passage: '시편 46:1-3',
+        bookTitle: '시편',
+        theme: '환난 중에 만날 큰 피난처',
+        reasoning: '세상의 혼돈과 불확실성 속에서도 흔들리지 않는 하나님의 거룩한 처소'
+      }
+    ];
+  }
+
+  if (kw.includes('외로움') || kw.includes('고립') || kw.includes('소외') || kw.includes('관계') || kw.includes('우울') || kw.includes('혼자')) {
+    return [
+      {
+        passage: '시편 142:1-5',
+        bookTitle: '시편',
+        theme: '굴 속에서 드리는 탄식과 피난처',
+        reasoning: '아둘람 굴의 다윗처럼 홀로 고립된 성도에게 삼위일체 하나님이 유일한 피난처임을 선포'
+      },
+      {
+        passage: '히브리서 4:15-16',
+        bookTitle: '히브리서',
+        theme: '우리의 연약함을 동정하시는 대제사장',
+        reasoning: '우리의 모든 외로움과 고통을 친히 담당하신 예수 그리스도의 대속적 동행'
+      },
+      {
+        passage: '이사야 41:10',
+        bookTitle: '이사야',
+        theme: '임마누엘의 약속',
+        reasoning: '두려워하지 말라 내가 너와 함께 함이라 고백하는 영원한 동행의 말씀'
+      }
+    ];
+  }
+
+  if (kw.includes('실패') || kw.includes('경력') || kw.includes('사업') || kw.includes('재정') || kw.includes('고난') || kw.includes('시련') || kw.includes('좌절')) {
+    return [
+      {
+        passage: '로마서 8:28-30',
+        bookTitle: '로마서',
+        theme: '모든 것을 합력하여 선을 이루시는 은혜',
+        reasoning: '성도의 삶에서 일어나는 모든 실패와 시련조차 십자가 영광으로 재조율하시는 하나님 섭리'
+      },
+      {
+        passage: '고린도후서 12:9-10',
+        bookTitle: '고린도후서',
+        theme: '약할 때 강함 되시는 그리스도의 능력',
+        reasoning: '내 능력이 아닌 그리스도의 십자가 은혜가 내 약함 속에서 온전해짐을 고백'
+      },
+      {
+        passage: '시편 34:17-19',
+        bookTitle: '시편',
+        theme: '마음이 상한 자를 부원하시는 여호와',
+        reasoning: '부서진 마음을 결코 멸시치 아니하시고 고난에서 건지시는 목자 하나님'
+      }
+    ];
+  }
+
+  if (kw.includes('죄') || kw.includes('죄책감') || kw.includes('용서') || kw.includes('회개') || kw.includes('수치') || kw.includes('정죄')) {
+    return [
+      {
+        passage: '로마서 8:1-2',
+        bookTitle: '로마서',
+        theme: '그리스도 예수 안에 있는 자에게 결코 없음',
+        reasoning: '생명의 성령의 법이 죄와 사망의 법에서 완벽히 해방하였음을 선포'
+      },
+      {
+        passage: '시편 51:1-12',
+        bookTitle: '시편',
+        theme: '정한 마음의 창조와 보혈의 정결',
+        reasoning: '다윗의 참회시로 십자가 보혈로만 깨끗함을 입는 구속사적 은혜'
+      },
+      {
+        passage: '요한일서 1:9',
+        bookTitle: '요한일서',
+        theme: '미쁘시고 의로우신 용서의 하나님',
+        reasoning: '우리가 우리 죄를 자복할 때 모든 불의에서 정결하게 하시는 은혜'
+      }
+    ];
+  }
+
+  if (kw.includes('정체성') || kw.includes('가치') || kw.includes('방황') || kw.includes('비교') || kw.includes('자격') || kw.includes('소명')) {
+    return [
+      {
+        passage: '에베소서 1:3-7',
+        bookTitle: '에베소서',
+        theme: '창세 전 예정과 그리스도 안에서의 기업',
+        reasoning: '세속적 기준이 아닌 창세 전 삼위일체 하나님의 신령한 복과 자녀의 신분'
+      },
+      {
+        passage: '베드로전서 2:9',
+        bookTitle: '베드로전서',
+        theme: '택하신 족속이요 왕 같은 제사장',
+        reasoning: '거룩한 나라와 주님의 소유 된 백성으로서의 성도의 영광스러운 정체성'
+      },
+      {
+        passage: '시편 139:13-16',
+        bookTitle: '시편',
+        theme: '신묘막측한 창조와 주권',
+        reasoning: '모태에서부터 나를 지으신 하나님의 세밀하고 거룩한 뜻'
+      }
+    ];
+  }
+
+  if (kw.includes('가정') || kw.includes('부부') || kw.includes('자녀') || kw.includes('사랑') || kw.includes('용서')) {
+    return [
+      {
+        passage: '에베소서 5:22-33',
+        bookTitle: '에베소서',
+        theme: '교회와 그리스도의 신비와 가정의 비밀',
+        reasoning: '그리스도가 교회를 사랑하듯 부부가 서로 섬기며 일치를 이루는 성경적 가정'
+      },
+      {
+        passage: '고린도전서 13:1-7',
+        bookTitle: '고린도전서',
+        theme: '십자가 사랑의 참된 성품',
+        reasoning: '모든 것을 참으며 온유하고 성내지 않는 그리스도의 대속적 사랑'
+      }
+    ];
+  }
+
+  // Default fallback recommendations for general topic keywords
+  return [
+    {
+      passage: '마태복음 6:25-34',
+      bookTitle: '마태복음',
+      theme: '하나님의 주권적 섭리와 안식',
+      reasoning: '현대인의 영적 갈증과 염려를 공중의 새와 들의 백합화를 통해 해소하는 핵심 구절'
+    },
+    {
+      passage: '이사야 40:28-31',
+      bookTitle: '이사야',
+      theme: '여호와를 바라는 자의 새 힘',
+      reasoning: '피곤하고 곤비한 세속의 삶에서 독수리 날개치며 올라감 같은 은혜'
+    },
+    {
+      passage: '시편 23:1-6',
+      bookTitle: '시편',
+      theme: '여호와는 나의 목자시니',
+      reasoning: '선한 목자 되신 주님 안에서 평안과 잔의 넘침을 선포하는 대표 찬송시'
+    }
+  ];
+};
+

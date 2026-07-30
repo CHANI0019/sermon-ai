@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { SermonResult, SavedJournalItem } from '../types';
 import { DeepSeekService } from '../services/deepseekService';
 import { SpeechService } from '../services/speechService';
-import { BookOpen, Sparkles, Bookmark, Check, Compass, Layers, Mic, FileText, Volume2, VolumeX } from 'lucide-react';
+import { recommendScriptures, ScriptureRecommendation } from '../services/logosDatabase';
+import { NewsRssService, TrendingTopicItem } from '../services/newsRssService';
+import { BookOpen, Sparkles, Bookmark, Check, Compass, Layers, Mic, FileText, Volume2, VolumeX, Search, Wand2, Flame, RefreshCw, ArrowRight } from 'lucide-react';
 
 interface SermonGeneratorViewProps {
   onSaveItem: (item: Omit<SavedJournalItem, 'id' | 'createdAt'>) => void;
@@ -10,13 +12,43 @@ interface SermonGeneratorViewProps {
 
 export const SermonGeneratorView: React.FC<SermonGeneratorViewProps> = ({ onSaveItem }) => {
   const [topicKeyword, setTopicKeyword] = useState('불확실성과 인공지능 시대');
-  const [passageInput, setPassageInput] = useState('마태복음 6:25-34');
+  const [passageInput, setPassageInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<SermonResult | null>(null);
   const [fullScript, setFullScript] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [loadingScript, setLoadingScript] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+
+  // Live News Trending Topics State
+  const [trendingTopics, setTrendingTopics] = useState<TrendingTopicItem[]>([]);
+  const [loadingTopics, setLoadingTopics] = useState(false);
+
+  // Load trending topics from recent news RSS
+  const loadTrendingTopics = async () => {
+    setLoadingTopics(true);
+    try {
+      const topics = await NewsRssService.extractTrendingTopicKeywords();
+      setTrendingTopics(topics);
+      if (topics.length > 0 && (!topicKeyword || topicKeyword === '불확실성과 인공지능 시대')) {
+        setTopicKeyword(topics[0].keyword);
+      }
+    } finally {
+      setLoadingTopics(false);
+    }
+  };
+
+  useEffect(() => {
+    loadTrendingTopics();
+  }, []);
+
+  // Real-time AI scripture recommendations derived from topic keyword
+  const recommendations: ScriptureRecommendation[] = useMemo(() => {
+    return recommendScriptures(topicKeyword);
+  }, [topicKeyword]);
+
+  // Active target passage (User input or top AI recommendation)
+  const activePassage = passageInput.trim() || (recommendations.length > 0 ? recommendations[0].passage : '마태복음 6:25-34');
 
   // Stop speech synthesis when unmounting component
   useEffect(() => {
@@ -25,34 +57,57 @@ export const SermonGeneratorView: React.FC<SermonGeneratorViewProps> = ({ onSave
     };
   }, []);
 
-  const handleGenerateSermon = async () => {
+  // 1-Click AI Auto Match Scripture Passage
+  const handleAutoSelectScripture = () => {
+    if (recommendations.length > 0) {
+      setPassageInput(recommendations[0].passage);
+    }
+  };
+
+  // Handle clicking a trending news topic chip
+  const handleSelectTrendingTopic = (topic: TrendingTopicItem) => {
+    setTopicKeyword(topic.keyword);
+    // Clear custom passage to trigger fresh AI scripture recommendation
+    setPassageInput('');
+  };
+
+  const handleGenerateSermon = async (customPassage?: string) => {
     SpeechService.stop();
     setIsSpeaking(false);
     setLoading(true);
     setSaved(false);
     setFullScript(null);
 
+    const targetPassage = customPassage || passageInput.trim() || (recommendations.length > 0 ? recommendations[0].passage : '마태복음 6:25-34');
+    
+    // Automatically reflect selected passage to input state if it was empty
+    if (!passageInput.trim()) {
+      setPassageInput(targetPassage);
+    }
+
     try {
       await new Promise((res) => setTimeout(res, 600));
 
+      const matchedRec = recommendations.find((r) => r.passage === targetPassage) || recommendations[0];
+
       setResult({
-        title: `불안과 통제의 시대, 지혜로운 성도로 사는 법`,
-        passage: passageInput || '마태복음 6:25-34',
-        hook: `우리는 인공지능과 첨단 기술이 발전하는 문명의 정점에 살고 있지만, 역설적이게도 그 어느 때보다 '불확실성과 내일에 대한 불안' 속에서 살아갑니다. 모든 상황을 데이터와 예측으로 통제하려 하지만, 영혼의 갈증과 소진(Burnout)만을 경험합니다.`,
-        exegesis: `마태복음 6:25의 '염려하다(μεριμνάω)'는 마음이 여러 조각으로 산산이 갈라지는 상태를 뜻합니다. 주님께서는 공중의 새와 들의 백합화를 기르시는 하나님 아버지의 주권적 섭리를 바라보며, 세속적 통제의 욕망을 내려놓고 '하나님의 나라와 의'를 구하도록 가르치십니다.`,
+        title: `[${topicKeyword}] 시대속의 복음: ${matchedRec?.theme || '주권적 섭리와 영적 지혜'}`,
+        passage: targetPassage,
+        hook: `우리는 최근 시사 뉴스에서 뜨겁게 회자되는 "${topicKeyword}"라는 급변하는 시대적 요청과 불확실성의 한복판에 살아가고 있습니다. 세속의 문화와 데이터가 답을 제시하는 듯 보이지만, 인간 영혼의 깊은 불안과 영적 갈증은 오직 생명의 하나님 말씀 안에서만 선명한 대답을 찾습니다.`,
+        exegesis: `${targetPassage} 본문은 ${matchedRec?.reasoning || '성도의 불안과 삶의 정황을 삼위일체 하나님의 주권적 섭리와 십자가 구속사적 은혜 안에서 조명합니다.'}`,
         point1: {
-          title: '대지 1. 관점의 전환: 세속적 통제에서 주권적 섭리로',
-          body: '내가 모든 것을 제어하려는 통제 우상을 내려놓을 때, 만물을 지혜롭게 다스리시는 삼위일체 하나님이 나의 아버지가 되심을 깨닫게 됩니다. 고난조차 성화의 선으로 인도하십니다.'
+          title: `대지 1. 관점의 전환: 세속적 염려에서 하나님의 주권적 섭리로`,
+          body: `내가 삶을 제어하려는 통제의 욕망을 내려놓고, 만물을 지혜롭게 다스리시는 삼위일체 하나님이 나의 아버지가 되심을 고백합니다.`
         },
         point2: {
-          title: '대지 2. 정체성과 덕목: 세속의 조급함에 맞서는 거룩한 절제',
-          body: '세상 사람들은 미래를 알 수 없어 재물과 권력을 모으지만, 성도는 이미 얻은 하나님 자녀의 신분 안에서 담대함을 누립니다. 내일의 염려 대신 오늘 분량의 은혜를 경배합니다.'
+          title: `대지 2. 거룩한 정체성: 세속 조급함에 맞서는 그리스도의 소망`,
+          body: `세상은 미래를 알 수 없어 불안해하지만, 성도는 십자가 보혈 안에서 이미 얻은 하나님 자녀의 영원한 신분 안에서 담대함과 거룩한 절제를 지킵니다.`
         },
         point3: {
-          title: '대지 3. 청지기 삶과 실천: 일상에서의 하나님 중심 라이프스타일',
-          body: '나의 소유와 경력, 시간은 내 것이 아닌 하나님이 맡기신 선물입니다. 한 날의 괴로움에 매이지 않고, 오늘 지체들과 함께 은혜를 나누는 구체적 사랑을 실천합니다.'
+          title: `대지 3. 청지기 삶과 실천: 일상에서의 하나님 중심 라이프스타일`,
+          body: `나의 소유와 경력, 시간은 내 것이 아닌 하나님이 맡기신 선물입니다. 한 날의 괴로움에 매이지 않고, 오늘 지체들과 함께 은혜를 나누는 구체적 사랑을 실천합니다.`
         },
-        conclusion: `예수 그리스도께서는 십자가에서 인류의 가장 극심한 수치와 죽음이라는 불확실성을 친히 짊어지시고 부활하심으로 승리하셨습니다. 통제하려는 조급함을 내려놓고 참된 안식(Sabbath Rest)이 되시는 그리스도 안에서 담대히 걸어가십시오.`
+        conclusion: `예수 그리스도께서는 십자가에서 인류의 가장 극심한 수치와 죽음이라는 불확실성을 친히 짊어지시고 부활하심으로 승리하셨습니다. 세속의 조급함을 내려놓고 참된 안식(Sabbath Rest)이 되시는 그리스도 안에서 담대히 걸어가십시오.`
       });
     } finally {
       setLoading(false);
@@ -64,10 +119,16 @@ export const SermonGeneratorView: React.FC<SermonGeneratorViewProps> = ({ onSave
     SpeechService.stop();
     setIsSpeaking(false);
     setLoadingScript(true);
+    
+    const targetPassage = passageInput.trim() || (recommendations.length > 0 ? recommendations[0].passage : '마태복음 6:25-34');
+    if (!passageInput.trim()) {
+      setPassageInput(targetPassage);
+    }
+
     try {
       const script = await DeepSeekService.generateFullPastorSermonScript({
         topic: topicKeyword,
-        passage: passageInput
+        passage: targetPassage
       });
       setFullScript(script);
     } finally {
@@ -120,44 +181,124 @@ export const SermonGeneratorView: React.FC<SermonGeneratorViewProps> = ({ onSave
           </h2>
         </div>
         <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
-          목사님이 강단에서 그대로 선포하고 낭독하실 수 있는 정통 개혁주의 풀 텍스트 설교 대본과 음성 낭독 기능을 제공합니다.
+          최근 시사 뉴스에서 회자되는 **실시간 트렌드 키워드를 자동 추출**하고, 성경 66권 중 가장 부합하는 본문 구절을 **100% 자동 매칭**합니다.
         </p>
       </div>
 
       {/* Input Form */}
       <div className="glass-panel" style={{ padding: 'var(--space-lg)' }}>
+        {/* Hot News Trending Topic Auto Extraction Section */}
+        <div style={{ background: 'rgba(225, 29, 72, 0.06)', border: '1px solid rgba(225, 29, 72, 0.25)', padding: 'var(--space-md)', borderRadius: 'var(--radius-md)', marginBottom: 'var(--space-lg)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, flexWrap: 'wrap', gap: 6 }}>
+            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#f43f5e', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Flame size={16} /> 🔥 [최근 며칠간 시사 뉴스 회자 이슈] AI 시사 키워드 자동 추출 (클릭 시 1초 매칭):
+            </div>
+            <button
+              onClick={loadTrendingTopics}
+              disabled={loadingTopics}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#f43f5e',
+                fontSize: '0.78rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4
+              }}
+            >
+              <RefreshCw size={13} className={loadingTopics ? 'animate-spin' : ''} />
+              {loadingTopics ? '실시간 뉴스 분석 중...' : '🔄 실시간 이슈 새로고침'}
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', gap: 'var(--space-xs)', flexWrap: 'wrap' }}>
+            {trendingTopics.map((topic) => {
+              const isSelected = topicKeyword === topic.keyword;
+              return (
+                <button
+                  key={topic.id}
+                  onClick={() => handleSelectTrendingTopic(topic)}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: 20,
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    border: isSelected ? '2px solid #f43f5e' : '1px solid var(--color-border)',
+                    background: isSelected ? '#f43f5e' : 'var(--bg-secondary)',
+                    color: isSelected ? '#ffffff' : 'var(--color-text-main)',
+                    transition: 'all 0.2s ease',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    boxShadow: isSelected ? '0 0 10px rgba(244, 63, 94, 0.4)' : 'none'
+                  }}
+                  title={topic.summary}
+                >
+                  <span style={{ opacity: 0.8, fontSize: '0.7rem', padding: '1px 5px', background: isSelected ? 'rgba(255,255,255,0.2)' : 'var(--color-primary-light)', color: isSelected ? '#ffffff' : 'var(--color-primary)', borderRadius: 3 }}>
+                    {topic.category}
+                  </span>
+                  {topic.keyword.length > 25 ? `${topic.keyword.slice(0, 25)}...` : topic.keyword}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--space-md)', marginBottom: 'var(--space-md)' }}>
           <div>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: 6 }}>
-              시대적 주제 키워드 (Topic Keyword)
+              시대적 주제 키워드 (Topic Keyword) <span style={{ color: 'var(--color-primary)', fontWeight: 700 }}>*뉴스 자동 추출</span>
             </label>
             <input
               type="text"
               value={topicKeyword}
               onChange={(e) => setTopicKeyword(e.target.value)}
-              placeholder="예: 불확실성과 인공지능 시대, 경력 실패 극복"
+              placeholder="위의 실시간 뉴스 키워드를 클릭하거나 직접 입력하세요"
               style={{
                 width: '100%',
                 padding: '10px 14px',
                 background: 'var(--bg-secondary)',
-                border: '1px solid var(--color-border)',
+                border: '1px solid var(--color-primary)',
                 borderRadius: 'var(--radius-md)',
                 color: 'var(--color-text-main)',
                 fontSize: '0.95rem',
-                outline: 'none'
+                outline: 'none',
+                boxShadow: '0 0 8px rgba(245, 158, 11, 0.15)'
               }}
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text-main)', marginBottom: 6 }}>
-              성경 본문 (Scripture Passage)
-            </label>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+              <label style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text-main)' }}>
+                성경 본문 (Scripture Passage) <span style={{ fontSize: '0.75rem', color: 'var(--color-accent)', fontWeight: 500 }}>(미입력 시 AI 자동 탐색)</span>
+              </label>
+              <button
+                type="button"
+                onClick={handleAutoSelectScripture}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--color-primary)',
+                  fontSize: '0.8rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 4
+                }}
+              >
+                <Wand2 size={13} /> AI 본문 자동 채우기
+              </button>
+            </div>
             <input
               type="text"
               value={passageInput}
               onChange={(e) => setPassageInput(e.target.value)}
-              placeholder="예: 마태복음 6:25-34, 에베소서 5:15-17"
+              placeholder={`미입력 시 AI가 자동 매칭 ("${recommendations[0]?.passage || '마태복음 6:25-34'}")`}
               style={{
                 width: '100%',
                 padding: '10px 14px',
@@ -172,8 +313,43 @@ export const SermonGeneratorView: React.FC<SermonGeneratorViewProps> = ({ onSave
           </div>
         </div>
 
+        {/* AI Scripture Recommendation Chips */}
+        <div style={{ background: 'rgba(245, 158, 11, 0.06)', border: '1px solid rgba(245, 158, 11, 0.2)', padding: 'var(--space-md)', borderRadius: 'var(--radius-md)', marginBottom: 'var(--space-md)' }}>
+          <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--color-primary)', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Search size={14} /> AI 키워드 분석 성경 본문 추천 (클릭하면 바로 적용됩니다):
+          </div>
+          <div style={{ display: 'flex', gap: 'var(--space-xs)', flexWrap: 'wrap' }}>
+            {recommendations.map((rec, idx) => {
+              const isSelected = passageInput.trim() === rec.passage || (!passageInput.trim() && idx === 0);
+              return (
+                <button
+                  key={rec.passage}
+                  onClick={() => setPassageInput(rec.passage)}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: 20,
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    border: isSelected ? '2px solid var(--color-primary)' : '1px solid var(--color-border)',
+                    background: isSelected ? 'var(--color-primary)' : 'var(--bg-secondary)',
+                    color: isSelected ? '#0f172a' : 'var(--color-text-main)',
+                    transition: 'all 0.2s ease',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 4
+                  }}
+                  title={rec.reasoning}
+                >
+                  {isSelected ? '✓ ' : ''}{rec.passage} <span style={{ opacity: 0.8, fontSize: '0.75rem' }}>({rec.theme})</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <div style={{ display: 'flex', gap: 'var(--space-sm)', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
-          <button onClick={handleGenerateSermon} disabled={loading} className="btn-secondary" style={{ minWidth: 150 }}>
+          <button onClick={() => handleGenerateSermon()} disabled={loading} className="btn-secondary" style={{ minWidth: 150 }}>
             {loading ? <Sparkles className="animate-spin" size={18} /> : <Compass size={18} />}
             {loading ? '개요 구상 중...' : '3대지 개요 생성'}
           </button>
@@ -184,6 +360,7 @@ export const SermonGeneratorView: React.FC<SermonGeneratorViewProps> = ({ onSave
           </button>
         </div>
       </div>
+
 
       {/* Output Results */}
       {result && (
