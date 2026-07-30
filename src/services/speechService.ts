@@ -2,11 +2,21 @@
  * 🔊 목회자 강단 설교 전용 감정·구어체 자연스러운 음성 낭독 (Pastoral Preaching TTS) 서비스
  */
 export class SpeechService {
-  private static synth: SpeechSynthesis | null = typeof window !== 'undefined' && 'speechSynthesis' in window ? window.speechSynthesis : null;
   private static isCancelling: boolean = false;
 
+  private static getSynth(): SpeechSynthesis | null {
+    try {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        return window.speechSynthesis;
+      }
+    } catch (e) {
+      // Mobile Safari SecurityError catch
+    }
+    return null;
+  }
+
   public static isSupported(): boolean {
-    return this.synth !== null;
+    return this.getSynth() !== null;
   }
 
   /**
@@ -165,7 +175,8 @@ export class SpeechService {
    * 피치(Pitch)와 속도(Rate)를 다이내믹하게 조절하여 생동감 있게 낭독
    */
   public static async speak(text: string, onEnd?: () => void, onError?: () => void): Promise<boolean> {
-    if (!this.synth) return false;
+    const synth = this.getSynth();
+    if (!synth) return false;
 
     this.stop();
     this.isCancelling = false;
@@ -200,7 +211,7 @@ export class SpeechService {
     }
 
     // Get best Korean voice
-    const voices = this.synth.getVoices();
+    const voices = synth.getVoices() || [];
     const koreanVoice = voices.find((v) => v.lang.includes('ko') || v.lang.includes('KO'));
 
     // Speak sentence by sentence with pastoral emotional pitch/speed modulation
@@ -236,7 +247,7 @@ export class SpeechService {
         utterance.onend = () => resolve();
         utterance.onerror = () => resolve();
 
-        this.synth?.speak(utterance);
+        synth.speak(utterance);
       });
 
       // Natural pause between sentences (pastoral breath interval: longer for ! . and shorter for ,)
@@ -255,24 +266,36 @@ export class SpeechService {
 
   public static stop() {
     this.isCancelling = true;
-    if (this.synth) {
-      this.synth.cancel();
+    const synth = this.getSynth();
+    if (synth) {
+      try {
+        synth.cancel();
+      } catch (e) {
+        // ignore
+      }
     }
   }
 
   public static pause() {
-    if (this.synth && this.synth.speaking) {
-      this.synth.pause();
+    const synth = this.getSynth();
+    if (synth && synth.speaking) {
+      try {
+        synth.pause();
+      } catch (e) {}
     }
   }
 
   public static resume() {
-    if (this.synth && this.synth.paused) {
-      this.synth.resume();
+    const synth = this.getSynth();
+    if (synth && synth.paused) {
+      try {
+        synth.resume();
+      } catch (e) {}
     }
   }
 
   public static isSpeaking(): boolean {
-    return this.synth ? this.synth.speaking : false;
+    const synth = this.getSynth();
+    return synth ? synth.speaking : false;
   }
 }
