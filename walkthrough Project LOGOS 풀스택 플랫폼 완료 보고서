@@ -1,0 +1,67 @@
+# Project LOGOS 풀스택 플랫폼 완료 보고서 (Walkthrough)
+
+신학 학사 및 성경학 Ph.D.(구속사적 주해/목회상담)와 컴퓨터공학 Ph.D.(GenAI/RAG/Guardrails) 융합 시각에 기반한 **Project LOGOS 웹 애플리케이션 및 모바일 퍼스트 PWA 플랫폼** 구축을 성공적으로 완료하였습니다.
+
+---
+
+## 🏛️ 1. Project LOGOS 핵심 아키텍처 구현 내용
+
+### A. 4-Tier 프롬프트 파이프라인 (`lib/promptPipeline.ts`)
+1. **Tier 1 (Persona & Identity)**: 정통 개혁주의/복음주의 정체성, 깊은 공감, 겸손, AI 존재적 차이 선언(Distinctive Nature).
+2. **Tier 2 (RAG Ingestion)**: 성경 본문, 히브리어/헬라어 원어 인사이트 및 구속사적(Christ-Centered) 주석 맥락 주입.
+3. **Tier 3 (Task Specification)**:
+   - **📖 AI 3대지 설교 생성 모드**: Hook -> 원어 주해 -> 3대지(관점 전환, 정체성/덕목, 청지기 삶과 실천) -> 안식과 그리스도 소망 결론.
+   - **🕊️ 4단계 대화형 목회 상담 모드**: Step 1 공감 경청 -> Step 2 성경 인물/평행 서사 -> Step 3 신학적 재정의 -> Step 4 영적 실천 & 묵상 기도.
+4. **Tier 4 (Guardrail Check)**: Level 1 이단/기복/숙명론 차단 & Level 2 자살예방 핫라인 인터셉트 및 면책 조항 부착.
+
+---
+
+### B. 실시간 위기 감지 & Guardrail 시스템 (`lib/guardrails.ts`)
+- **Level 1 (이단/기복/숙명론 정규식 검증)**: 번영신학, 율법주의적 정죄, 직통계시, 행위구원론, 숙명론/사주, 아리우스주의 검증 및 정통 교리 교정.
+- **Level 2 (24시간 생명보호 핫라인 인터셉터)**: "자살", "극단적 선택", "자해" 등의 위기 키워드 탐지 시 즉시 **자살예방 상담전화(109)**, **정신건강 상담전화(1577-0199)** 및 목회자 연결 카드 화면으로 즉시 전환.
+- **표준 면책 조항 (Disclaimer)**: 영적 중생과 구원은 AI 코드가 아닌 성령 하나님과 지역 교회 공동체를 통해 이루어짐을 매 답변에 자동 부착.
+
+---
+
+### C. 5대 인간 고뇌 RAG DB 코퍼스 (`src/services/logosDatabase.ts`)
+1. **불안 (Anxiety)**: AI 시대의 불확실성과 내일에 대한 염려 (마 6:25-34)
+2. **외로움 (Loneliness)**: 디지털 연결 속의 고립감 (시 142:1-5 / 히 4:15-16)
+3. **실패 (Failure)**: 사업 실패 및 경력 상실의 절망 (롬 8:28-30 / 고후 12:9-10)
+4. **죄책감 (Guilt)**: 지속적인 영적 넘어짐과 수치심 (롬 8:1-2 / 요일 1:9)
+5. **정체성 (Identity)**: 존재 가치의 방황과 세속적 비교 (엡 1:3-7 / 벧전 2:9)
+
+---
+
+### D. 묵상 저널 & 설교 보관함 (`src/components/SavedJournalView.tsx`)
+- 생성된 3대지 설교 구상 및 4단계 목회 상담 대화 내용을 원클릭으로 보관하고 복사/관리할 수 있는 로컬 저장소 뷰 탑재.
+
+---
+
+### E. 모바일 퍼스트 PWA & 럭셔리 UI/UX
+- **Warm Neutral (`#FDFBF7`) & Deep Slate (`#1E293B`) & Warm Gold Accent (`#D97706`)** 팔레트 적용.
+- 안드로이드 카카오톡/네이버 인앱 브라우저 크롬 Intent 자동 탈출.
+- iOS 사파리 슬라이드업(Slide-up Bottom Sheet) PWA 설치 가이드 모션.
+- Desktop 사용자용 QR 코드 스캔 접속 레이어 제공.
+
+---
+
+## 🧪 2. 검증 결과 (Verification Results)
+
+- **TypeScript 타입 검사 & Production 빌드**: `npm run build` 결과 0 Error, 0 Warning으로 최종 성공.
+  ```
+  vite v5.4.21 building for production...
+  ✓ 1485 modules transformed.
+  dist/index.html                   1.57 kB
+  dist/assets/index-CV9knnqu.css    4.27 kB
+  dist/assets/index-BOOsAmhJ.js   226.49 kB
+  ✓ built in 2.13s
+  ```
+
+---
+
+## 🛠️ 3. 실행 방법 (How to Run)
+
+```bash
+npm run dev
+```
+- **접속 주소**: `http://localhost:3000`

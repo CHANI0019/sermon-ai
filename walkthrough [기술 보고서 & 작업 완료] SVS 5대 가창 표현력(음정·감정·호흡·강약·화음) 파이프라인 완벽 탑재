@@ -1,0 +1,29 @@
+# [기술 보고서 & 작업 완료] SVS 5대 가창 표현력(음정·감정·호흡·강약·화음) 파이프라인 완벽 탑재
+
+언급해주신 **ACE Studio, DiffSinger, OpenUtau, SoftVC, RVC(Retrieval Voice Conversion)** 등의 Diffusion 기반 Singing AI가 백엔드/클라우드 추론 엔진(PyTorch/CUDA GPU)에서 가창할 때 제어되는 핵심 **5대 가창 표현력 파라미터(음정, 감정 선율, 호흡 쉼표, 가창 강약, 4성부 화음)**를 사용자가 직접 조절하고 실시간 시각화 파형으로 확인할 수 있도록 프론트엔드 파이프라인 구축을 완료하였습니다.
+
+---
+
+## 1. 5대 SVS 가창 표현력 파라미터 구조
+
+### 1) 🎵 1. 음정 (Pitch Accuracy & Shift)
+- `Pitch Shift (-12 ~ +12 SemiTones)`: 남성 바리톤 ↔ 테너 ↔ 여성 소프라노 음역대 이동
+
+### 2) 🎭 2. 보컬 감정 표현 스타일 (Emotion Expression)
+- `따뜻한 위로 (Warm Comfort)`, `장엄한 경배 (Solemn Grace)`, `기쁜 찬양 (Joyful Praise)`, `거룩한 성가 (Sacred Classic)` 4가지 감정 억양 튜닝
+
+### 3) 💨 3. 호흡 쉼표 간격 (Breathing Alignment)
+- `Auto`, `Frequent (자주 들숨)`, `Deep (깊은 호흡)`, `Minimal (숨소리 최소)`
+
+### 4) 💪 4. 가창 강약 조절 (Dynamics Pressure 20% ~ 100%)
+- 보컬 성대 압력 및 음량 다이내믹스 스웰 표현
+
+### 5) 🎼 5. 다성부 화음 믹서 (4-Part Choir Harmony)
+- `Soprano`, `Alto`, `Tenor`, `Bass` 각 파트별 ON/OFF 개별 제어
+
+---
+
+## 2. 검증 완료 (Verification)
+
+- 1번 [AI 찬양 스튜디오] 탭에 5대 가창 표현력 파라미터 제어판이 정상적으로 배치되고 시각화 파형 연동 완료
+- `npm run build` 프로덕션 빌드 **0 Error, 0 Warning으로 100% 정상 성공**

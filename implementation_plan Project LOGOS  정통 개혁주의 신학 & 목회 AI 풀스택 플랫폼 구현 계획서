@@ -1,0 +1,57 @@
+# Project LOGOS: 정통 개혁주의 신학 & 목회 AI 풀스택 플랫폼 구현 계획서
+
+신학 학사 및 성경학 Ph.D.(구속사적 해석학/목회상담)와 컴퓨터공학 Ph.D.(GenAI/RAG/Guardrails) 융합 시각으로 **Project LOGOS 애플리케이션 아키텍처**를 완전히 구현합니다.
+
+---
+
+## 1. 프로젝트 정체성 & 4-Tier 프롬프트 파이프라인
+
+### 4-Tier System Prompt Architecture
+1. **Tier 1 (Persona & Identity)**: 정통 개혁주의/복음주의, 겸손과 신학적 권위, AI 존재적 차이 선언(Distinctive Nature).
+2. **Tier 2 (RAG Context Ingestion)**: 성경 본문, 원어(히브리어/헬라어) 인사이트, 주석 코퍼스 주입.
+3. **Tier 3 (Task Specification)**:
+   - **설교 모드 (Sermon Mode)**: Hook -> 원문 주해 -> 3대지(관점 전환, 정체성/덕목, 청지기 삶) -> 안식과 소망 결론.
+   - **상담 모드 (Counseling Mode)**: 4단계 (1. 공감 경청 -> 2. 성경 인물/평행 서사 -> 3. 신학적 재정의 -> 4. 영적 실천 & 109 긴급 안내).
+4. **Tier 4 (Guardrail Check Engine)**: 
+   - Level 1 정규식 검증 (번영신학, 이단, 숙명론, 행위구원 차단)
+   - Level 2 생명 보호 인터셉트 (자살, 자해 탐지 시 109/1577-0199 전용 UI 노출)
+
+---
+
+## 2. 파일 아키텍처 및 시스템 구조
+
+```
+d:/sermon/
+├── lib/
+│   ├── guardrails.ts                # Level 1 이단/기복 검증 & Level 2 자살예방(109) 핫라인 인터셉터
+│   └── promptPipeline.ts            # 4-Tier 프롬프트 생성 파이프라인
+├── src/
+│   ├── types/index.ts               # Project LOGOS 통합 타입 명세
+│   ├── services/
+│   │   ├── theologyEngine.ts        # RAG & 구속사적 주해 / 목회상담 AI 코어
+│   │   └── logosDatabase.ts         # 5대 인간 고뇌(불안, 외로움, 실패, 죄책감, 정체성) RAG 템플릿 DB
+│   ├── components/
+│   │   ├── Header.tsx               # Warm Gold & Deep Slate 럭셔리 네비게이션
+│   │   ├── InAppEscapeModal.tsx     # 카카오톡/네이버 인앱 브라우저 스마트 탈출
+│   │   ├── IOSInstallBottomSheet.tsx# iOS 사파리 슬라이드업 PWA 설치 가이드
+│   │   ├── DesktopQRPopup.tsx       # Desktop용 QR 모바일 접속 팝업
+│   │   ├── SermonGeneratorView.tsx  # 3대지 구속사적 설교 생성 모드
+│   │   ├── PastoralCounselingView.tsx# 4단계 대화형 목회 상담 모드
+│   │   ├── SavedJournalView.tsx     # 묵상 저널 & 설교 저장소
+│   │   └── GuardrailsView.tsx       # 4-Tier 신학 & 생명보호 가이드라인 진단
+│   ├── styles/global.css            # Warm Beige(#FDFBF7), Deep Slate(#1E293B), Warm Gold(#D97706)
+│   └── App.tsx                      # Project LOGOS 메인 컨트롤러
+```
+
+---
+
+## 3. Verification Plan (검증 계획)
+
+### Automated Verification
+- `npm run build`를 구동하여 TypeScript 타입 안정성 및 Vite 빌드 오차 0개 검증.
+- 4-Tier 프롬프트 및 Guardrail 모듈 단위 테스트 검증.
+
+### Manual Verification
+- 자살/극단적 선택 키워드 입력 시 109 긴급 UI 인터셉트 작동 확인.
+- 번영신학/사주 입력 시 Level-1 Guardrail 교정 작동 확인.
+- 3대지 설교 생성 및 4단계 목회 상담 인터페이스 동작 확인.

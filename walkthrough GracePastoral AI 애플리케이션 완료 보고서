@@ -1,0 +1,66 @@
+# GracePastoral AI 애플리케이션 완료 보고서 (Walkthrough)
+
+정통 개혁주의 및 복음주의 신학(Ph.D. 수준 성경학 + 목회상담 심리학)에 기반한 **GracePastoral AI 웹 애플리케이션 및 모바일 퍼스트 PWA 시스템** 구축을 완료했습니다.
+
+---
+
+## 1. 주요 구현 결과 요약
+
+### 🏛️ 신학 & 목회 AI 엔진 (`src/services/theologyEngine.ts`)
+1. **구속사적 성경 주해 (Redemptive-Historical Exegesis)**:
+   - 본문 구절 입력 시 역사적/문학적 맥락, 원어(히브리어/헬라어) 인사이트, **십자가 예수 그리스도 중심(Christ-centered) 구속사 연결**, 목회적 적용 및 **자의적 단권 인용(Proof-texting) 주의점**을 도출합니다.
+2. **개혁주의 목회 상담 & 영적 돌봄**:
+   - 성도의 아픔에 대한 깊은 성경적 공감, 묵상 말씀, 기도제목 정리.
+   - **AI 도구의 한계 명시 (Distinction of Nature)**: 영적 중생과 은혜는 AI 코드가 아닌 성령 하나님의 역사와 지역 교회 공동체를 통해 이루어짐을 자동으로 권면합니다.
+3. **신학 가이드라인 검증기 (Theological Guardrails)**:
+   - 번영신학/기복주의, 숙명론/운명론, 아리우스주의 등 이단 교리 탐지 및 복음주의 정통 교리로 교정합니다.
+
+---
+
+### 📱 모바일 퍼스트 PWA & 스마트 설치 엔진
+
+1. **스마트 기기 감지 훅 (`src/hooks/useDevice.ts`)**:
+   - Client Hints 및 User-Agent 기반 Android, iPhone, iPad, Windows, macOS 자동 구분.
+   - 카카오톡/네이버 인앱 브라우저 및 iOS Safari, PWA Standalone 모드 탐지.
+2. **카카오톡/네이버 인앱브라우저 스마트 탈출 (`src/components/InAppEscapeModal.tsx`)**:
+   - 안드로이드 접속 시 `intent://` 크롬 자동 탈출 구동.
+   - iOS 접속 시 사파리 전용 주소 복사 및 이동 안내 모달 노출.
+3. **iOS 사파리 전용 Bottom Sheet 가이드 (`src/components/IOSInstallBottomSheet.tsx`)**:
+   - 사파리 유저 접속 시 하단 툴바 공유 아이콘(`📤`) 터치 -> `홈 화면에 추가` 3단계 슬라이드업 가이드 패널 및 핑거 모션 연출.
+4. **Desktop 모바일 접속 QR 코드 (`src/components/DesktopQRPopup.tsx`)**:
+   - PC 접속 사용자를 위해 현재 페이지 URL 기반 QR 코드를 실시간 렌더링.
+5. **PWA Service Worker & Manifest (`public/manifest.json`, `public/sw.js`)**:
+   - Standalone 실행, 오프라인 캐싱, 스플래시 연출 및 `beforeinstallprompt` 연동 지원.
+
+---
+
+### 🎨 UI/UX & 디자인 시스템 (`DESIGN.md`, `UI_UX_PRO_MAX_GUIDE.md` 준수)
+- **8dp Rhythm Spacing**: 4px, 8px, 16px, 24px, 32px 배수 스페이싱 적용.
+- **Color Tokens**: 경건한 Slate Dark (`#0F172A`), Surface Gold (`#F59E0B`), Teal Accent (`#0D9488`).
+- **WCAG 2.1 AA**: 텍스트 대비 명암비 4.5:1 이상, 모든 터치 엘리먼트 44px 이상 터치 타겟 보장.
+- **다크/라이트 모드**: 원클릭 테마 전환 지원.
+
+---
+
+## 2. 검증 및 결과 (Verification Results)
+
+- **TypeScript 타입 검사 & Production 빌드**: `npm run build` 실행 결과 0 Error, 0 Warning으로 정상 번들링 완료.
+  ```
+  vite v5.4.21 building for production...
+  ✓ 1482 modules transformed.
+  dist/index.html                   1.57 kB
+  dist/assets/index-uLY5PBAe.css    4.24 kB
+  dist/assets/index-BFonwBG1.js   209.43 kB
+  ✓ built in 2.20s
+  ```
+
+---
+
+## 3. 실행 방법 (How to Run)
+
+터미널에서 아래 명령어로 로컬 개발 서버를 띄워 테스트하실 수 있습니다:
+
+```bash
+npm run dev
+```
+접속 주소: `http://localhost:3000`

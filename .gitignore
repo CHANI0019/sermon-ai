@@ -1,0 +1,10 @@
+node_modules
+dist
+.env
+.env.local
+.env.*.local
+*.log
+*.wav
+*.mp3
+sohyang_hymn_*
+

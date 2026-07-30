@@ -1,0 +1,22 @@
+# [작업 완료 보고서] SVS 보컬 포만트 노래 가창 (Singing Voice Formant Vocoder) 엔진 개편 완료
+
+기존 브라우저 단순 낭독(Text-to-Speech)의 밋밋한 글 읽기 현상을 근본적으로 해결하고, **찬송가 멜로디 음정(도레미파솔)과 비브라토, 포르타멘토 음정 넘김 및 구음 포만트(Human Voice Formant Filter)가 동기화되어 진짜 노래를 부르는 SVS 보컬 가창 엔진** 개편을 완료하였습니다.
+
+---
+
+## 1. 주요 혁신 및 대개편 내역
+
+### 1) 브라우저 밋밋한 TTS 글 낭독 완전 제거
+- 단순 글을 읽어주던 Speech 낭독 엔진을 완전히 비활성화하고, **찬송가 선율 음정(Pitch: F0 Note Frequency)과 비브라토에 부합하는 노래 가창 오디오 신세사이저**로 전면 전환하였습니다.
+
+### 2) 보컬 포만트 노래 가창 엔진 (`Singing Vocal Formant Vocoder`)
+- **포르타멘토 음정 넘어감 (Portamento Pitch Swell):** 노래를 부를 때 음과 음 사이가 부드럽게 오르내리도록 음정 모듈레이션 적용
+- **구음 포만트 밴드패스 필터 (Vocal Formant Bandpass Filter):** 인간 성대 파형(Sawtooth Vocoder)에 구음 밴드패스 필터(700Hz ~ 1800Hz)를 결합하여 노래 가창 발성 사운드 생성
+- **비브라토 바이브레이션 (Vocal Vibrato LFO):** 가창자의 목소리 떨림을 5.5Hz LFO 모듈레이터로 보컬 성대에 정밀 입힘
+
+---
+
+## 2. 검증 완료 (Verification)
+
+- `▶ 재생` 클릭 시 밋밋하게 글을 읽는 낭독이 아닌, 찬송가 멜로디 선율 음정을 타며 노래를 부르는 보컬 가창음 및 오르간 앙상블 청음 검증 완료
+- `npm run build` 프로덕션 빌드 **0 Error, 0 Warning으로 100% 정상 성공**

@@ -1,0 +1,90 @@
+# [구현 계획서] AI 기반 찬양/음성 합성 시스템 (SVS 및 음성 변환)
+
+본 프로젝트는 성경적 메시지 전달을 넘어, AI 기술(Singing Voice Synthesis & Voice Conversion)을 활용하여 성가대, 목사님, 특정 개인의 음성을 학습하고 고품질 찬양을 자동 생성 및 합성하는 **AI 가수 모델(Singing Voice Synthesis)** 기능을 GracePastoral AI 시스템에 통합합니다.
+
+---
+
+## 1. 개요 및 구현 목표
+
+1. **데이터 학습 사양 및 파라미터 추출 (Training & Acoustic Analysis)**
+   - 찬송 및 음성 녹음 데이터 (남성/여성 Voice Model) 분리 관리
+   - 피치(Pitch/MIDI F0), 박자(Tempo/Rhythm), 발성 스타일, 비브라토(Vibrato), 호흡(Breathing) 파라미터 분석 및 학습 시뮬레이션
+
+2. **주요 SVS 엔진 및 표현 능력 (Core SVS Technologies)**
+   - RVC(Retrieval-based Voice Conversion), DiffSinger, ACE Studio, OpenUtau, SoftVC 기반 합성 파이프라인
+   - 단순 TTS를 넘어서는 선율, 감정 표현, 호흡 쉼표, 강약(Dynamics), 4성부 다성부 화음(Soprano, Alto, Tenor, Bass Harmony) 제어
+
+3. **실제 적용 및 서비스 연계 (Application & Sermon/Counseling Integration)**
+   - **명령어/텍스트 기반 찬양 생성:** "찬송가 405장을 [학습된 담임목사님/성가대원] 음성으로 부르세요."
+   - **설교 및 상담 자동 연계:** 목회 상담 및 설교 메시지 마무리에 성도 위로용 맞춤형 찬양 음성 자동 추천 및 1-Click 생성 기능 연계
+
+---
+
+## 2. 찬송가 전체 데이터 보관 및 처리 전략 (Hymn Data Architecture)
+
+찬송가 전체 645장의 가사, 악보 메타데이터, MIDI/피치(F0) 곡선 및 오디오 특징 데이터를 효과적으로 보관 및 처리하는 **3단계 하이브리드 데이터 아키텍처**를 사용합니다:
+
+### 1) 경량 프론트엔드 캐시 & 인덱스 DB (Client-side IndexedDB / In-Memory JSON)
+- **보관 장소:** `src/services/hymnDatabase.ts` 및 브라우저 `IndexedDB`
+- **보관 내용:** 찬송가 645장 전체 인덱스 (장수, 제목, 관련 성경구절, 절기/주제 분류, 키/조성, 기본 템포, 가사 텍스트)
+- **효과:** 네트워크 요청 없이 645장 전체 곡을 0.01초 내 초고속 검색 및 검색어 오토컴플릿 제공
+
+### 2) 클라우드 스토리지 & 오디오 파라미터 CDN (Cloud Storage / Object Store)
+- **보관 장소:** Cloud Storage (GCS / S3 / Cloudflare R2) & `public/assets/hymns/`
+- **보관 내용:** 찬송가별 MIDI 선율 트랙, 4성부(소프라노, 알토, 테너, 베이스) 분리 데이터, F0 Pitch Curve JSON 데이터, SVS 보컬 체크포인트 파일 (`.safetensors`, `.pth`)
+- **효과:** 고용량 음향 데이터를 청크(Chunk) 단위로 분할하여 SVS 합성 시 필요한 특정 곡의 데이터만 동적 분할 로딩 (Lazy Loading)
+
+### 3) 신학 및 주제 연계 벡터 RAG DB (Vector & Semantic DB)
+- **보관 장소:** RAG 임베딩 DB (`logosDatabase.ts` 연동)
+- **보관 내용:** 찬송가 가사의 신학적 주제(은혜, 인도, 감사, 고난, 정죄 해소 등)와 설교/상담 카테고리의 융합 임베딩
+- **효과:** 목회 상담 결과(예: 불안, 실패) 또는 설교 주제 입력 시 해당 주제와 가장 부합하는 찬송가를 AI가 자동 추천 및 연동
+
+---
+
+## 3. 주요 변경 사항 및 구성 요소
+
+### [Component 1] 데이터 모델 및 찬송가 전체 DB (`src/types/index.ts` & `src/services/hymnDatabase.ts`)
+- `TabType`에 `'svs_praise'` (AI 찬양 음성 합성) 신규 탭 추가
+- 찬송가 645장 전체 메타데이터 DB 및 주요 SVS 가창 데이터셋 구축
+- `SvsVoiceModel` (음성 모델 정보: 목사님, 성가대 테너/소프라노/알토/베이스 등)
+- `SvsAcousticParams` (Pitch MIDI, Tempo, Vibrato, Breathing, Dynamics, Harmony)
+- `SvsPraiseGenerationResult` (합성된 오디오, 파형 데이터, 가사 동기화, 4성부 트랙 데이터)
+
+### [Component 2] SVS 합성 & 음학 분석 엔진 서비스 (`src/services/svsPraiseService.ts`)
+- **Web Audio API기반 오디오 합성기 시뮬레이터:** 멜로디(피치)와 음색(Formant)을 합성하여 실제 청음 가능한 찬양 음성 주파수 생성
+- **Acoustic Extractor & Voice Model Manager:** RVC / DiffSinger / ACE Studio / OpenUtau 엔진별 가상 보컬 모델 데이터셋 구축 및 음학적 파라미터(비브라토, 호흡, 강약) 추출
+- **Smart Praise Recommendation:** 상담/설교 결론 카테고리에 맞는 찬송가/위로 찬양 가사 및 MIDI 매핑데이터 제공
+
+### [Component 3] AI SVS 찬양 UI 컴포넌트 (`src/components/SvsPraiseView.tsx`)
+- **탭 1: AI 찬양 스튜디오 (Singing Generator)**
+  - 찬송가 645장 전체 검색 및 선택 / 명령어 가사 입력 + 음성 모델 선택 (목사님, 성가대, 찬양리더) + SVS 엔진 선택
+  - 피치/비브라토/호흡/4성부 화음 믹서 튜닝 제어기
+  - Web Audio API 기반 오디오 플레이어 & 캔버스 음정/파형 시각화(Visualizer)
+- **탭 2: 음성 학습 및 파라미터 분석 (Voice Model Trainer & Acoustic Analysis)**
+  - 음성 녹음 파일 데이터셋 업로드/샘플 청음
+  - F0 Pitch/MIDI 분석 그래프, 비브라토 깊이, 호흡 간격, 발성 스타일 분석 보고서 View
+  - RVC / DiffSinger 체크포인트 학습 진행률 모니터링
+- **탭 3: 목회 상담 & 설교 연계 위로 찬양 (Pastoral Link & Comfort Songs)**
+  - 상담 결과 메시지 기반 성도 맞춤 위로 찬양 자동 생성기
+
+### [Component 4] 애플리케이션 통합 & 서비스 연계
+- `src/App.tsx`: SVS Praise 탭 렌더링 추가
+- `src/components/Header.tsx`: 네비게이션 메인 메뉴 및 모바일 탭 바에 "AI 찬양 (SVS)" 메뉴 추가
+- `src/components/PastoralCounselingView.tsx`: 상담 완료 결과에 "맞춤형 AI 위로 찬양 생성" 연동 버튼 추가
+- `src/components/SermonGeneratorView.tsx`: 설교 작성 완료 결과에 "결단 찬양 SVS 음성 생성" 연동 버튼 추가
+
+---
+
+## 4. 검증 계획 (Verification Plan)
+
+### 수동 및 시각적 검증 (Manual Verification)
+1. **AI 찬양 합성 기능 검증:**
+   - 찬송가 645장 검색 및 선택 후 텍스트/명령어(예: 찬송가 405장, 담임목사님 음성 모델) 입력 후 SVS 합성 실행
+   - Web Audio 오디오 재생기 동작 및 캔버스 음정/파형 오디오 애니메이션 시각화 확인
+   - 4성부 화음(소프라노/알토/테너/베이스) 온오프 믹서 조작 시 반응성 확인
+2. **음성 데이터 학습 및 분석 검증:**
+   - 샘플 음성 분석 클릭 시 F0 Pitch curve, Vibrato, Breathing 파라미터 시각화 리포트 표시 검증
+3. **설교/상담 연계 검증:**
+   - 목회 상담 화면 및 설교 생성 화면에서 "AI 찬양 생성" 클릭 시 해당 곡과 분위기가 SVS 스튜디오로 자동 전송되는지 확인
+4. **반응형 UI & PWA 호환성 검증:**
+   - 데스크톱 및 모바일 뷰포트에서 UI 깨짐 없이 매끄럽게 작동하는지 검증

@@ -1,0 +1,105 @@
+# 정통 개혁주의/복음주의 신학 & 목회 AI 어시스턴트 (GracePastoral AI) 구현 계획서
+
+프로젝트 내 4개 설계 기획 문서(`DESIGN.md`, `UI_UX_PRO_MAX_GUIDE.md`, `mobile_first_pwa_ideas.md`, `prompt-pwa.md`)를 철저히 참조하여, **정통 개혁주의 및 복음주의 신학 기반의 목회 & 성경연구 AI 어시스턴트 PWA 웹 애플리케이션**을 제작합니다.
+
+---
+
+## 1. 개요 및 정체성 (System Identity & Hermeneutics)
+
+### 1.1 신학적 정체성 및 원칙
+1. **구속사적 해석학 (Redemptive-Historical Hermeneutics)**: 
+   - 성경의 모든 본문을 구속사 전체 흐름 속에서 해석하며, 구약과 신약의 진리를 예수 그리스도 중심(Christ-centered)으로 조명합니다.
+   - 단권 구절만 떼어내어 그릇되게 적용하는 단편적 문맥 이탈(Proof-texting)을 철저히 배제합니다.
+2. **존재적 차이 명시 (Distinction of Nature)**:
+   - 본 시스템은 성경 연구와 목회적 묵상을 돕는 AI 도구임을 밝힙니다.
+   - 영적 중생, 신령한 은혜, 진정한 위로와 구원은 코드가 아닌 **성령 하나님의 역사와 성도의 교회가 속한 지역 교회 공동체**를 통해 이뤄짐을 분명히 안내합니다.
+3. **태도 및 이단 검증 (Operational Boundaries)**:
+   - 기복주의/번영신학(Prosperity Gospel), 숙명론(Fatalism), 역사적 이단 사상(아리우스주의, 펠라기우스주의, 도케티즘 등)을 철저히 거부합니다.
+   - 인간 개인의 미래에 대한 절대적 예언이나 하나님의 직접 계시 작성을 명증하게 사양합니다.
+
+---
+
+## 2. 참조 문서 및 반영 사항
+
+1. **`DESIGN.md`**:
+   - 계층형 클라이언트 아키텍처, RESTful API 및 데이터 모델 설계 가이드 반영.
+   - 사용자 롤, 모듈화된 아키텍처 및 테마 시스템 구조 적용.
+2. **`UI_UX_PRO_MAX_GUIDE.md`**:
+   - 8dp Spacing Rhythm, WCAG 2.1 AA 접근성(4.5:1 이상 명암비), 44x44px 이상의 터치 타겟.
+   - 이모지 대신 체계적인 SVG Vector 아이콘 시스템 구축.
+   - 경건하고 깊이 있는 Slate & Amber Gold 럭셔리 컬러 토큰 시스템 적용.
+3. **`mobile_first_pwa_ideas 모바일 퍼스트(Mobile-First) PWA 설치 혁신 아이디어 및 설계 기획서.md`**:
+   - 안드로이드 카카오톡/네이버 인앱브라우저 자동 탈출 크롬 인텐트(`intent://`) 스크립트.
+   - iOS 전용 사파리 이동 모달 및 사파리 하단 툴바 지시 Slide-up Bottom Sheet.
+   - 혜택 연동형 PWA 설치 UX 및 네이티브 앱 느낌의 Standalone 화면 경험 연출.
+4. **`prompt-pwa.md`**:
+   - `useDevice` 커스텀 훅 및 디바이스(Android, iOS, iPad, PC) 자동 감지 엔진.
+   - PC 접속 시 모바일 접속용 자동 생성 QR 코드 팝업.
+   - 접속 통계 및 PWA 설치 상태를 모니터링하는 대시보드 뷰.
+
+---
+
+## 3. 핵심 기능 구현 명세
+
+### A. 신학 & 목회 AI 어시스턴트 코어 (Theology & Pastoral Engine)
+- **구속사적 성경 주해 (Redemptive-Historical Exegesis)**: 
+  - 본문(구약/신약) 입력 시 문맥, 원어적 의미, 구속사적 연결(그리스도), 목회적 적용 조명.
+- **목회 상담 & 영적 묵상 (Pastoral Care & Counseling)**:
+  - 성경적 공감, 묵상 가이드, 기도제목 정리 (AI 한계 및 지역교회 목회자 상담 권면 자동 포함).
+- **신학 가이드라인 검증기 (Theological Guardrails)**:
+  - 번영신학, 숙명론, 기복주의 질문 입력 시 성경적 경고 및 복음주의 진리 교정 안내.
+
+### B. 모바일 퍼스트 PWA & 스마트 설치 UX (Mobile PWA Engine)
+- **스마트 인앱 브라우저 탈출 (In-App Escape)**:
+  - 카카오톡/네이버 브라우저 접속 감지 시 안드로이드는 Chrome 자동 전환, iOS는 Safari 주소 복사 안내 모달 노출.
+- **iOS Bottom Sheet 설치 가이드**:
+  - 아이폰 접속 시 하단 툴바 `[공유] -> [홈 화면에 추가]` 3단계 애니메이션 슬라이드 패널 노출.
+- **Android PWA 원클릭 설치**:
+  - `beforeinstallprompt` 이벤트 수집 후 커스텀 PWA 설치 버튼 제공.
+- **PC 환경 QR 코드 및 디바이스 브릿지**:
+  - Desktop 사용자를 위해 현재 URL 기반 QR 코드 모바일 접속 레이어 제공.
+
+---
+
+## 4. Proposed File Structure (프로젝트 구조)
+
+```
+d:/sermon/
+├── index.html                       # PWA 마크업 및 메인 웹 앱 진입점
+├── manifest.json                    # PWA 매니페스트 (Standalone, 아이콘, 테마)
+├── sw.js                            # Service Worker (오프라인 캐싱 및 PWA 지원)
+├── package.json                     # 프로젝트 설정 및 Vite / React 스택
+├── vite.config.ts                   # Vite 빌드 설정
+└── src/
+    ├── types/                       # 디바이스, 신학 메시지, 통계 타입 정의
+    ├── hooks/
+    │   └── useDevice.ts             # User-Agent / Client Hints 기기 판별 훅
+    ├── services/
+    │   └── theologyEngine.ts        # 개혁주의 구속사적 해석 및 목회상담 AI 엔진
+    ├── components/
+    │   ├── Header.tsx               # 브랜드 및 디바이스 상태 헤더
+    │   ├── InAppEscapeModal.tsx     # 카카오톡/네이버 인앱브라우저 탈출 모달
+    │   ├── IOSInstallBottomSheet.tsx# iOS 사파리 슬라이드업 가이드 패널
+    │   ├── PWAInstallBanner.tsx     # Android/Desktop PWA 설치 프롬프트
+    │   ├── DesktopQRPopup.tsx       # Desktop용 QR코드 모바일 접속 안내
+    │   ├── ExegesisView.tsx         # 구속사적 본문 주해/연구 인터페이스
+    │   ├── PastoralCounselView.tsx  # 목회 상담 및 영적 돌봄 인터페이스
+    │   ├── GuardrailsView.tsx       # 정통 신학 가이드라인 및 이단/기복주의 검증
+    │   └── DeviceStatsView.tsx      # 접속 기기 및 PWA 시스템 상태 대시보드
+    ├── styles/
+    │   └── global.css               # 8dp Rhythm, Slate Gold 럭셔리 다크/라이트 CSS
+    └── main.tsx                     # React 앱 진입점
+```
+
+---
+
+## 5. Verification Plan (검증 계획)
+
+### Automated Verification
+- `npm run build`를 수행하여 TypeScript 타입 검사 및 Vite 생산성 빌드 오류 여부 확인.
+- PWA 매니페스트 및 Service Worker 정상 등록 검증.
+
+### Manual Verification
+- 브라우저 개발자 도구의 Device Emulation (iPhone, Android, Desktop)으로 반응형 UI 테스트.
+- iOS 슬라이드업 Bottom Sheet 및 Android PWA 설치 이벤트 시뮬레이션.
+- 구속사적 성경 해석, 목회 상담, 신학 검증 필터 작동 결과의 신학적 적합성 검증.

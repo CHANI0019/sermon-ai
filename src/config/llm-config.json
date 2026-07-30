@@ -1,0 +1,16 @@
+{
+  "deepseek": {
+    "defaultModel": "deepseek-chat",
+    "fallbackModels": [
+      "deepseek-chat",
+      "deepseek-reasoner",
+      "deepseek-coder"
+    ],
+    "apiUrl": "https://api.deepseek.com/chat/completions",
+    "modelsApiUrl": "https://api.deepseek.com/models",
+    "autoDetectLatest": true,
+    "temperature": 0.7,
+    "maxTokens": 4096,
+    "lastUpdated": "2026-07-29"
+  }
+}
