@@ -83,43 +83,43 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Navigation Tabs */}
-        <nav style={{ display: 'flex', gap: 'var(--space-xs)', overflowX: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', paddingBottom: 4 }}>
+        <nav className="header-nav" style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center', width: '100%', paddingBottom: 2 }}>
           <button
             onClick={() => setActiveTab('sermon')}
             className={activeTab === 'sermon' ? 'btn-primary' : 'btn-secondary'}
-            style={{ flexShrink: 0, fontSize: '0.85rem', whiteSpace: 'nowrap' }}
+            style={{ padding: '6px 12px', fontSize: '0.8rem', minHeight: 36, whiteSpace: 'nowrap' }}
           >
-            <BookOpen size={16} /> 📖 3대지 설교
+            <BookOpen size={15} /> 📖 3대지 설교
           </button>
           <button
             onClick={() => setActiveTab('news_sermon')}
             className={activeTab === 'news_sermon' ? 'btn-primary' : 'btn-secondary'}
-            style={{ flexShrink: 0, fontSize: '0.85rem', whiteSpace: 'nowrap' }}
+            style={{ padding: '6px 12px', fontSize: '0.8rem', minHeight: 36, whiteSpace: 'nowrap' }}
           >
-            <Newspaper size={16} /> 📰 실시간 뉴스 설교
+            <Newspaper size={15} /> 📰 실시간 뉴스 설교
           </button>
           <button
             onClick={() => setActiveTab('counseling')}
             className={activeTab === 'counseling' ? 'btn-primary' : 'btn-secondary'}
-            style={{ flexShrink: 0, fontSize: '0.85rem', whiteSpace: 'nowrap' }}
+            style={{ padding: '6px 12px', fontSize: '0.8rem', minHeight: 36, whiteSpace: 'nowrap' }}
           >
-            <HeartHandshake size={16} /> 🕊️ 목회 상담
+            <HeartHandshake size={15} /> 🕊️ 목회 상담
           </button>
           <button
             onClick={() => setActiveTab('svs_praise')}
             className={activeTab === 'svs_praise' ? 'btn-primary' : 'btn-secondary'}
-            style={{ flexShrink: 0, fontSize: '0.85rem', whiteSpace: 'nowrap' }}
+            style={{ padding: '6px 12px', fontSize: '0.8rem', minHeight: 36, whiteSpace: 'nowrap' }}
           >
-            <Music size={16} /> 🎵 AI 찬양 (SVS)
+            <Music size={15} /> 🎵 AI 찬양 (SVS)
           </button>
           <button
             onClick={() => setActiveTab('journal')}
             className={activeTab === 'journal' ? 'btn-primary' : 'btn-secondary'}
-            style={{ flexShrink: 0, fontSize: '0.85rem', whiteSpace: 'nowrap', position: 'relative' }}
+            style={{ padding: '6px 12px', fontSize: '0.8rem', minHeight: 36, whiteSpace: 'nowrap', position: 'relative' }}
           >
-            <Bookmark size={16} /> 📚 묵상 저널
+            <Bookmark size={15} /> 📚 묵상 저널
             {savedCount > 0 && (
-              <span style={{ position: 'absolute', top: 4, right: 4, background: 'var(--color-accent)', color: '#fff', fontSize: '0.65rem', borderRadius: '50%', width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ marginLeft: 4, background: 'var(--color-accent)', color: '#fff', fontSize: '0.65rem', borderRadius: 'var(--radius-pill)', padding: '1px 6px', fontWeight: 700 }}>
                 {savedCount}
               </span>
             )}
@@ -127,16 +127,16 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={() => setActiveTab('guardrails')}
             className={activeTab === 'guardrails' ? 'btn-primary' : 'btn-secondary'}
-            style={{ flexShrink: 0, fontSize: '0.85rem', whiteSpace: 'nowrap' }}
+            style={{ padding: '6px 12px', fontSize: '0.8rem', minHeight: 36, whiteSpace: 'nowrap' }}
           >
-            <ShieldCheck size={16} /> 🛡️ 신학 검증
+            <ShieldCheck size={15} /> 🛡️ 신학 검증
           </button>
           <button
             onClick={() => setActiveTab('stats')}
             className={activeTab === 'stats' ? 'btn-primary' : 'btn-secondary'}
-            style={{ flexShrink: 0, fontSize: '0.85rem', whiteSpace: 'nowrap' }}
+            style={{ padding: '6px 12px', fontSize: '0.8rem', minHeight: 36, whiteSpace: 'nowrap' }}
           >
-            <Cpu size={16} /> PWA/기기
+            <Cpu size={15} /> PWA/기기
           </button>
         </nav>
       </div>
