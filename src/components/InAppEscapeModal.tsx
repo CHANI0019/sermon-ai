@@ -11,6 +11,13 @@ interface InAppEscapeModalProps {
 export const InAppEscapeModal: React.FC<InAppEscapeModalProps> = ({ device, isOpen, onClose }) => {
   const [copied, setCopied] = React.useState(false);
 
+  React.useEffect(() => {
+    if (isOpen && device.isInAppBrowser && device.isAndroid) {
+      const intentUrl = `intent://${window.location.host}${window.location.pathname}${window.location.search}#Intent;scheme=https;package=com.android.chrome;end`;
+      window.location.href = intentUrl;
+    }
+  }, [isOpen, device.isInAppBrowser, device.isAndroid]);
+
   if (!isOpen || !device.isInAppBrowser) return null;
 
   const currentUrl = window.location.href;
