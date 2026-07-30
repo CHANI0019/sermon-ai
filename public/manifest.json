@@ -1,22 +1,28 @@
 {
-  "short_name": "은혜와말씀 AI",
-  "name": "GracePastoral - 정통 개혁주의 신학 & 목회 AI 어시스턴트",
+  "id": "/",
+  "short_name": "LOGOS AI",
+  "name": "LOGOS - 정통 개혁주의 신학 & 목회 AI 어시스턴트",
   "description": "구속사적 성경 주해, 개혁주의 목회 상담, 복음주의 신학 가이드라인 및 모바일 퍼스트 PWA 서비스",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "/icon-192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "/icon-512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ],
   "start_url": "/",
+  "scope": "/",
   "background_color": "#0F172A",
   "theme_color": "#0F172A",
   "display": "standalone",
-  "orientation": "portrait"
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "portrait",
+  "categories": ["lifestyle", "utilities", "education"]
 }

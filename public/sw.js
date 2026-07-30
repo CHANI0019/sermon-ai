@@ -1,8 +1,10 @@
-const CACHE_NAME = 'grace-pastoral-ai-v1';
+const CACHE_NAME = 'logos-ai-pwa-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
-  '/manifest.json'
+  '/manifest.json',
+  '/icon-192.png',
+  '/icon-512.png'
 ];
 
 self.addEventListener('install', (event) => {
