@@ -25,15 +25,28 @@ export const App: React.FC = () => {
   const [showDesktopQR, setShowDesktopQR] = useState(false);
   const [showPWABanner, setShowPWABanner] = useState(true);
 
-  // Saved Journal Items State (Persisted in localStorage)
+  // Saved Journal Items State (Persisted in localStorage safely)
   const [savedItems, setSavedItems] = useState<SavedJournalItem[]>(() => {
-    const saved = localStorage.getItem('project_logos_saved_journal');
-    return saved ? JSON.parse(saved) : [];
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const saved = localStorage.getItem('project_logos_saved_journal');
+        return saved ? JSON.parse(saved) : [];
+      }
+    } catch (e) {
+      // Mobile Safari / In-App browser SecurityError fallback
+    }
+    return [];
   });
 
-  // Sync saved items to localStorage
+  // Sync saved items to localStorage safely
   useEffect(() => {
-    localStorage.setItem('project_logos_saved_journal', JSON.stringify(savedItems));
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.setItem('project_logos_saved_journal', JSON.stringify(savedItems));
+      }
+    } catch (e) {
+      // Mobile Safari fallback
+    }
   }, [savedItems]);
 
   // Trigger modal visibility on device detection

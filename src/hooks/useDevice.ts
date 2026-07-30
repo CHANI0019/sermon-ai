@@ -40,23 +40,26 @@ export function useDevice(): DeviceInfo {
 }
 
 function getInitialDeviceInfo(): DeviceInfo {
-  const ua = typeof navigator !== 'undefined' ? navigator.userAgent : '';
-  
-  // 1. In-App Browser Detection (KakaoTalk, Naver)
-  const isKakaoTalk = /kakaotalk/i.test(ua);
-  const isNaver = /naver/i.test(ua);
-  const isInAppBrowser = isKakaoTalk || isNaver || /inapp|line|snapchat|instagram/i.test(ua);
-  const inAppType = isKakaoTalk ? 'kakaotalk' : isNaver ? 'naver' : isInAppBrowser ? 'other' : undefined;
+  try {
+    const ua = typeof navigator !== 'undefined' ? (navigator.userAgent || '') : '';
+    const platform = typeof navigator !== 'undefined' ? (navigator.platform || '') : '';
+    const maxTouchPoints = typeof navigator !== 'undefined' ? (navigator.maxTouchPoints || 0) : 0;
+    
+    // 1. In-App Browser Detection (KakaoTalk, Naver)
+    const isKakaoTalk = /kakaotalk/i.test(ua);
+    const isNaver = /naver/i.test(ua);
+    const isInAppBrowser = isKakaoTalk || isNaver || /inapp|line|snapchat|instagram/i.test(ua);
+    const inAppType = isKakaoTalk ? 'kakaotalk' : isNaver ? 'naver' : isInAppBrowser ? 'other' : undefined;
 
-  // 2. OS & Device Type Detection
-  const isAndroid = /android/i.test(ua);
-  const isIOS = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  const isIPhone = /iphone/i.test(ua);
-  const isIPad = /ipad/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  
-  const isWindows = /windows/i.test(ua);
-  const isMacOS = /macintosh|mac os x/i.test(ua) && !isIOS;
-  const isLinux = /linux/i.test(ua) && !isAndroid;
+    // 2. OS & Device Type Detection
+    const isAndroid = /android/i.test(ua);
+    const isIOS = /iphone|ipad|ipod/i.test(ua) || (platform === 'MacIntel' && maxTouchPoints > 1);
+    const isIPhone = /iphone/i.test(ua);
+    const isIPad = /ipad/i.test(ua) || (platform === 'MacIntel' && maxTouchPoints > 1);
+    
+    const isWindows = /windows/i.test(ua);
+    const isMacOS = /macintosh|mac os x/i.test(ua) && !isIOS;
+    const isLinux = /linux/i.test(ua) && !isAndroid;
 
   let deviceType: DeviceInfo['deviceType'] = 'Unknown';
   if (isAndroid) deviceType = 'Android';
@@ -88,22 +91,41 @@ function getInitialDeviceInfo(): DeviceInfo {
     browserVersion = ua.match(/edg\/([\d.]+)/i)?.[1] || '';
   }
 
-  // 4. PWA Standalone Mode Detection
-  const isPWA = window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone === true;
+    // 4. PWA Standalone Mode Detection
+    let isPWA = false;
+    try {
+      isPWA = (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || (typeof navigator !== 'undefined' && (navigator as any).standalone === true);
+    } catch (e) {}
 
-  return {
-    deviceType,
-    os: navigator.platform || 'Unknown OS',
-    browser,
-    browserVersion,
-    isMobile,
-    isTablet,
-    isDesktop,
-    isPWA,
-    isIOS,
-    isAndroid,
-    isInAppBrowser,
-    inAppType,
-    canInstallPWA: false, // Updated by event listener if supported
-  };
+    return {
+      deviceType,
+      os: platform || 'Unknown OS',
+      browser,
+      browserVersion,
+      isMobile,
+      isTablet,
+      isDesktop,
+      isPWA,
+      isIOS,
+      isAndroid,
+      isInAppBrowser,
+      inAppType,
+      canInstallPWA: false,
+    };
+  } catch (e) {
+    return {
+      deviceType: 'Unknown',
+      os: 'Unknown OS',
+      browser: 'Unknown',
+      browserVersion: '',
+      isMobile: true,
+      isTablet: false,
+      isDesktop: false,
+      isPWA: false,
+      isIOS: false,
+      isAndroid: false,
+      isInAppBrowser: false,
+      canInstallPWA: false
+    };
+  }
 }
