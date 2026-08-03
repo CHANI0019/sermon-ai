@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "deploy": ".\\deploy.bat"
+    "deploy": "npx tsc --noEmit && git add . && git commit -m \"feat: LOGOS 소스코드 업데이트 및 배포\" && git push origin main && npx vercel --prod --yes"
   },
   "dependencies": {
     "lucide-react": "^0.344.0",
