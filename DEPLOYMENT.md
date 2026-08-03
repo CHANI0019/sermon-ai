@@ -10,9 +10,26 @@
 * **서브 배포 URL**: [https://sermon-f2dss3w6t-danaris-projects-1a5840f6.vercel.app](https://sermon-f2dss3w6t-danaris-projects-1a5840f6.vercel.app)
 * **GitHub 소스코드 저장소**: [https://github.com/CHANI0019/sermon-ai.git](https://github.com/CHANI0019/sermon-ai.git) (`main` 브랜치)
 
+## ⚡ 1-Click 원클릭 자동 배포 (One-Click Auto-Deploy)
+
+프로젝트 루트 폴더에 포함된 자동 배포 스크립트를 사용하면 **TypeScript 타입 검증 ➔ Git 커밋 ➔ GitHub 푸시 ➔ Vercel 프로덕션 라이브 배포**를 **단 1번의 클릭/명령어**로 자동 처리합니다.
+
+### 🎯 실행 방법 (아래 3가지 중 택 1)
+
+1. **배널 파일 더블 클릭 (가장 쉬운 방법)**:
+   * 프로젝트 폴더의 [deploy.bat](file:///d:/sermon/deploy.bat) 파일을 **더블 클릭**합니다.
+2. **npm 명령어 실행**:
+   ```bash
+   npm run deploy
+   ```
+3. **PowerShell 스크립트 실행**:
+   ```powershell
+   .\deploy.ps1
+   ```
+
 ---
 
-## 1. 🐙 Git 저장소 코드 커밋 & 푸시 (Git Deployment)
+## 1. 🐙 Git 저장소 코드 커밋 & 푸시 (수동 수순)
 
 코드 수정 작업이 완료되면 아래 커맨드를 통해 GitHub 원격 저장소에 최신 변경 사항을 업로드합니다.
 
