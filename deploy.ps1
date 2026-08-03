@@ -1,5 +1,4 @@
 ﻿# LOGOS 원클릭 자동 배포 스크립트 (PowerShell 전용)
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 System.Text.ASCIIEncoding = [System.Text.Encoding]::UTF8
 
 Write-Host '===================================================' -ForegroundColor Cyan
