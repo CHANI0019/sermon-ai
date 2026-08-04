@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sermon-eta.vercel.app/sitemap.xml
