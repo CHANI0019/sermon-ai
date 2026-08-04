@@ -146,6 +146,7 @@ if ($LASTEXITCODE -ne 0) {
 
 | 은행명 | 영문 은행명 | SWIFT-BIC 코드 |
 | :--- | :--- | :--- |
+| **토스뱅크** | Toss Bank | `TOSSKR22XXX` |
 | **카카오뱅크** | Kakao Bank | `KAKOKR22XXX` |
 | **신한은행** | Shinhan Bank | `SHBKROSE` |
 | **국민은행** | KB Kookmin Bank | `CZNBKRSE` |
