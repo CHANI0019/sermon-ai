@@ -1,5 +1,6 @@
-﻿# LOGOS 원클릭 자동 배포 스크립트 (PowerShell 전용)
-System.Text.ASCIIEncoding = [System.Text.Encoding]::UTF8
+# LOGOS 원클릭 자동 배포 스크립트 (PowerShell 전용)
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
 
 Write-Host '===================================================' -ForegroundColor Cyan
 Write-Host '[LOGOS] 원클릭 Git 커밋 & Vercel 자동 배포 시작' -ForegroundColor Cyan
@@ -8,9 +9,9 @@ Write-Host ''
 
 Write-Host '[1/4] TypeScript 컴파일 및 타입 검증 중...' -ForegroundColor Yellow
 npx tsc --noEmit
-if (0 -ne 0) {
+if ($LASTEXITCODE -ne 0) {
     Write-Host '[오류] TypeScript 컴파일 에러가 발생했습니다.' -ForegroundColor Red
-    exit 0
+    exit $LASTEXITCODE
 }
 Write-Host '[성공] TypeScript 검증 통과!' -ForegroundColor Green
 Write-Host ''
