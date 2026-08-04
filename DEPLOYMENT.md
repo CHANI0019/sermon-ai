@@ -9,6 +9,7 @@
 * **대표 프로덕션 URL**: [https://sermon-eta.vercel.app](https://sermon-eta.vercel.app)
 * **서브 배포 URL**: [https://sermon-f2dss3w6t-danaris-projects-1a5840f6.vercel.app](https://sermon-f2dss3w6t-danaris-projects-1a5840f6.vercel.app)
 * **GitHub 소스코드 저장소**: [https://github.com/CHANI0019/sermon-ai.git](https://github.com/CHANI0019/sermon-ai.git) (`main` 브랜치)
+* **Google AdSense & SEO 등록 가이드**: [GOOGLE_ADSENSE_SEO_GUIDE.md](file:///d:/sermon/GOOGLE_ADSENSE_SEO_GUIDE.md)
 
 ## ⚡ 1-Click 원클릭 자동 배포 (One-Click Auto-Deploy)
 
