@@ -3,6 +3,7 @@ import { NewsRssService, NewsItem } from '../services/newsRssService';
 import { SavedJournalItem, SermonResult } from '../types';
 import { DeepSeekService } from '../services/deepseekService';
 import { SpeechService } from '../services/speechService';
+import { generateSmartNewsQT } from '../services/qtGeneratorService';
 import {
   Newspaper,
   Sparkles,
@@ -30,6 +31,7 @@ export const NewsSermonView: React.FC<NewsSermonViewProps> = ({ onSaveItem }) =>
   const [loadingNews, setLoadingNews] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [sermonResult, setSermonResult] = useState<SermonResult | null>(null);
+  const [prayerPoints, setPrayerPoints] = useState<{ p1: string; p2: string; p3: string } | null>(null);
   const [fullScript, setFullScript] = useState<string | null>(null);
   const [loadingScript, setLoadingScript] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -76,43 +78,13 @@ export const NewsSermonView: React.FC<NewsSermonViewProps> = ({ onSaveItem }) =>
     setFullScript(null);
 
     try {
-      await new Promise((res) => setTimeout(res, 450));
-
-      let matchedPassage = '마태복음 6:25-34';
-      let exegesisText = '세속적 염려와 불안을 넘어 공중의 새를 기르시는 하나님의 주권적 섭리와 영원한 나라를 바라봅니다.';
-
-      if (news.category === 'IT/AI') {
-        matchedPassage = '창세기 1:28 / 에베소서 5:15-17';
-        exegesisText = '기술 혁신의 격변 속에서, 성도는 세월을 아끼고 하나님이 주신 문화 대명령과 영적 분별력을 지켜야 합니다.';
-      } else if (news.category === '경제/금융') {
-        matchedPassage = '디모데전서 6:6-10 / 로마서 8:32';
-        exegesisText = '재정적 불확실성 속에서 성도의 안전지대는 물질의 많고 적음이 아닌, 아들을 아끼지 않으신 하나님의 신실하심입니다.';
-      } else if (news.category === '사회/문화') {
-        matchedPassage = '시편 142:1-5 / 히브리서 4:15-16';
-        exegesisText = '디지털 세상의 소외감과 관계의 상처 속에서, 우리의 고통을 친히 체휼하신 대제사장 예수 그리스도의 동행에 소망이 있습니다.';
-      } else if (news.category === '세계/국제') {
-        matchedPassage = '시편 24:1 / 로마서 8:19-22';
-        exegesisText = '글로벌 위기와 지구촌의 아픔 앞에서, 모든 피조세계의 주인이신 하나님 주권과 성도의 청지기적 중보기도가 요구됩니다.';
-      }
-
-      setSermonResult({
-        title: `[오늘의 시사 묵상] "${news.title.slice(0, 26)}..." 시대를 조명하는 말씀`,
-        passage: matchedPassage,
-        hook: `오늘 우리가 만난 뉴스("${news.title}")는 급변하는 이 시대 속에 살아가는 크리스천들이 겪는 현실적 고뇌와 두려움을 보여줍니다. 세상의 불안한 뉴스 뒤에서 하나님은 오늘 우리에게 어떤 영적 지혜와 평안을 주십니까?`,
-        exegesis: exegesisText,
-        point1: {
-          title: '묵상 1. 관점의 전환: 세상 뉴스 뒤에 계신 하나님의 주권적 손길 바라보기',
-          body: '세상 뉴스는 순간의 불안을 유발하지만, 성경은 이 모든 역사 정황조차 삼위일체 하나님의 거룩한 주권 안에서 인도되고 있음을 선포합니다.'
-        },
-        point2: {
-          title: '묵상 2. 영적 정체성: 세속 사조에 휩쓸리지 않는 굳건한 믿음',
-          body: '세상이 성공과 불안에 타협할 때, 성도는 십자가 그리스도 안에서 얻은 영원한 신분을 기억하며 물질과 기술 맹신의 우상을 배격합니다.'
-        },
-        point3: {
-          title: '묵상 3. 청지기의 삶: 아파하는 시사 현장을 향한 사랑과 이웃 섬김',
-          body: '뉴스를 단순히 소비하는 데 머물지 않고, 불안으로 고통받는 이웃과 사회를 향해 기도와 복음의 빛을 전하는 청지기로 살아갑니다.'
-        },
-        conclusion: `세상의 뉴스는 매일 변하지만, 하나님의 영원한 약속의 말씀은 세세토록 서 있습니다. 십자가에서 모든 권세를 이기신 예수 그리스도의 평안이 오늘 성도님의 마음과 삶을 덮으시기를 축복합니다.`
+      await new Promise((res) => setTimeout(res, 350));
+      const smartQt = generateSmartNewsQT(news);
+      setSermonResult(smartQt);
+      setPrayerPoints({
+        p1: smartQt.prayer1,
+        p2: smartQt.prayer2,
+        p3: smartQt.prayer3
       });
     } finally {
       setGenerating(false);
@@ -177,7 +149,11 @@ export const NewsSermonView: React.FC<NewsSermonViewProps> = ({ onSaveItem }) =>
 
   const handleCopyForShare = () => {
     if (!sermonResult || !selectedNews) return;
-    const shareText = `🕊️ [오늘의 시사 묵상(QT)]\n\n📰 뉴스: ${selectedNews.title}\n📖 성경 본문: ${sermonResult.passage}\n\n💡 묵상 한 줄: ${sermonResult.exegesis}\n\n🙏 오늘의 중보기도:\n1. 이 뉴스 속 아파하는 세상을 위해\n2. 세상 불안 속 굳건한 내 신앙을 위해\n3. 사랑을 실천하는 크리스천 청지기가 되게 하소서\n\n✨ 토스 인앱 '오늘의 시사 묵상(QT)'에서 읽기`;
+    const p1 = prayerPoints?.p1 || '이 뉴스 속 아파하는 세상을 위해';
+    const p2 = prayerPoints?.p2 || '세상 불안 속 굳건한 내 신앙을 위해';
+    const p3 = prayerPoints?.p3 || '사랑을 실천하는 크리스천 청지기가 되게 하소서';
+
+    const shareText = `🕊️ [오늘의 시사 묵상(QT)]\n\n📰 뉴스: ${selectedNews.title}\n📖 성경 본문: ${sermonResult.passage}\n\n💡 묵상 한 줄: ${sermonResult.exegesis}\n\n🙏 오늘의 중보기도:\n1. ${p1}\n2. ${p2}\n3. ${p3}\n\n✨ 토스 인앱 '오늘의 시사 묵상(QT)'에서 읽기`;
     navigator.clipboard.writeText(shareText);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
@@ -410,22 +386,24 @@ export const NewsSermonView: React.FC<NewsSermonViewProps> = ({ onSaveItem }) =>
                 </div>
 
                 {/* 3 Intercession Prayer Points Section */}
-                <div style={{ background: 'rgba(59, 130, 246, 0.08)', border: '1px solid rgba(59, 130, 246, 0.25)', padding: 'var(--space-lg)', borderRadius: 'var(--radius-md)', marginBottom: 'var(--space-lg)' }}>
-                  <h4 style={{ fontSize: '1rem', fontWeight: 700, color: '#3b82f6', marginBottom: 'var(--space-sm)', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <HeartHandshake size={20} /> 🙏 오늘 세상을 위한 3가지 중보기도
-                  </h4>
-                  <ul style={{ paddingLeft: '1.2rem', margin: 0, fontSize: '0.875rem', color: 'var(--color-text-main)', lineHeight: 1.8 }}>
-                    <li style={{ marginBottom: 4 }}>
-                      <strong>시사 현장의 아픔을 보살피는 기도:</strong> 이 뉴스 이슈로 인해 고통받고 불안해하는 우리 사회와 이웃들에게 하나님의 위로와 공의가 임하게 하소서.
-                    </li>
-                    <li style={{ marginBottom: 4 }}>
-                      <strong>굳건한 영적 분별력을 위한 기도:</strong> 세상의 불확실한 소식에 흔들리지 않고, 오직 예수 그리스도의 십자가 소망 안에서 주님의 평안을 누리게 하소서.
-                    </li>
-                    <li>
-                      <strong>빛과 소금의 삶을 살기 위한 기도:</strong> 이 시대를 지나는 크리스천으로서 삶의 현장에서 예수님의 따뜻한 사랑과 복음의 빛을 실천하게 하소서.
-                    </li>
-                  </ul>
-                </div>
+                {prayerPoints && (
+                  <div style={{ background: 'rgba(59, 130, 246, 0.08)', border: '1px solid rgba(59, 130, 246, 0.25)', padding: 'var(--space-lg)', borderRadius: 'var(--radius-md)', marginBottom: 'var(--space-lg)' }}>
+                    <h4 style={{ fontSize: '1rem', fontWeight: 700, color: '#3b82f6', marginBottom: 'var(--space-sm)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <HeartHandshake size={20} /> 🙏 오늘 세상을 위한 3가지 중보기도
+                    </h4>
+                    <ul style={{ paddingLeft: '1.2rem', margin: 0, fontSize: '0.875rem', color: 'var(--color-text-main)', lineHeight: 1.8 }}>
+                      <li style={{ marginBottom: 4 }}>
+                        <strong>시사 현장의 아픔을 보살피는 기도:</strong> {prayerPoints.p1}
+                      </li>
+                      <li style={{ marginBottom: 4 }}>
+                        <strong>굳건한 영적 분별력을 위한 기도:</strong> {prayerPoints.p2}
+                      </li>
+                      <li>
+                        <strong>빛과 소금의 삶을 살기 위한 기도:</strong> {prayerPoints.p3}
+                      </li>
+                    </ul>
+                  </div>
+                )}
 
                 {/* Conclusion Card */}
                 <div style={{ background: 'rgba(245, 158, 11, 0.1)', padding: 'var(--space-md)', borderRadius: 'var(--radius-md)' }}>
