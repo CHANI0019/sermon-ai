@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NewsRssService, NewsItem } from '../services/newsRssService';
 import { SavedJournalItem, SermonResult } from '../types';
 import { DeepSeekService } from '../services/deepseekService';
@@ -13,15 +13,12 @@ import {
   Mic,
   Volume2,
   VolumeX,
-  Pause,
-  Music,
   Share2,
   HeartHandshake,
   BookOpen,
   CheckCircle2,
   ChevronLeft,
-  Flame,
-  ChevronRight
+  Flame
 } from 'lucide-react';
 
 interface TossMiniAppViewProps {
@@ -44,27 +41,17 @@ export const TossMiniAppView: React.FC<TossMiniAppViewProps> = ({ onSaveItem, on
   const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [isPlayingMusic, setIsPlayingMusic] = useState(false);
-  const [activeTab, setActiveTab] = useState<'qt' | 'prayer' | 'music'>('qt');
-
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [activeTab, setActiveTab] = useState<'qt' | 'prayer'>('qt');
 
   useEffect(() => {
     return () => {
       SpeechService.stop();
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
     };
   }, []);
 
   const loadNews = async () => {
     SpeechService.stop();
     setIsSpeaking(false);
-    if (audioRef.current) {
-      audioRef.current.pause();
-      setIsPlayingMusic(false);
-    }
     setLoadingNews(true);
     try {
       const data = await NewsRssService.fetchLatestNews();
@@ -85,10 +72,6 @@ export const TossMiniAppView: React.FC<TossMiniAppViewProps> = ({ onSaveItem, on
   const handleGenerateNewsQT = async (news: NewsItem) => {
     SpeechService.stop();
     setIsSpeaking(false);
-    if (audioRef.current) {
-      audioRef.current.pause();
-      setIsPlayingMusic(false);
-    }
     setGenerating(true);
     setSaved(false);
     setFullScript(null);
@@ -138,11 +121,6 @@ export const TossMiniAppView: React.FC<TossMiniAppViewProps> = ({ onSaveItem, on
   };
 
   const handleToggleSpeech = () => {
-    if (isPlayingMusic && audioRef.current) {
-      audioRef.current.pause();
-      setIsPlayingMusic(false);
-    }
-
     if (isSpeaking) {
       SpeechService.stop();
       setIsSpeaking(false);
@@ -159,27 +137,6 @@ export const TossMiniAppView: React.FC<TossMiniAppViewProps> = ({ onSaveItem, on
           () => setIsSpeaking(false),
           () => setIsSpeaking(false)
         );
-      }
-    }
-  };
-
-  const handleToggleMusic = () => {
-    if (isSpeaking) {
-      SpeechService.stop();
-      setIsSpeaking(false);
-    }
-
-    if (audioRef.current) {
-      if (isPlayingMusic) {
-        audioRef.current.pause();
-        setIsPlayingMusic(false);
-      } else {
-        audioRef.current.play().then(() => {
-          setIsPlayingMusic(true);
-        }).catch(err => {
-          console.log('Toss audio playback error:', err);
-          setIsPlayingMusic(false);
-        });
       }
     }
   };
@@ -216,14 +173,6 @@ export const TossMiniAppView: React.FC<TossMiniAppViewProps> = ({ onSaveItem, on
         paddingBottom: 40
       }}
     >
-      {/* Hidden audio element for Sohyang AI Vocal MP3 */}
-      <audio
-        ref={audioRef}
-        src="/sohyang_hymn_405.mp3"
-        onEnded={() => setIsPlayingMusic(false)}
-        preload="metadata"
-      />
-
       {/* Toss Native Sticky Header Bar */}
       <header
         style={{
@@ -251,7 +200,7 @@ export const TossMiniAppView: React.FC<TossMiniAppViewProps> = ({ onSaveItem, on
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <span style={{ backgroundColor: 'rgba(49, 130, 246, 0.1)', color: '#3182F6', fontSize: '0.7rem', padding: '2px 6px', borderRadius: 4, fontWeight: 700 }}>
-                toss 앱인앱
+                toss 미니앱
               </span>
               <span style={{ fontSize: '0.75rem', color: '#8B95A1' }}>매일 아침 3분</span>
             </div>
@@ -381,7 +330,7 @@ export const TossMiniAppView: React.FC<TossMiniAppViewProps> = ({ onSaveItem, on
           </div>
         )}
 
-        {/* QT Content View Tabs (QT / 기도 / 찬양) */}
+        {/* QT Content View Tabs (QT / 기도) */}
         {sermonResult && (
           <div style={{ display: 'flex', gap: 6, backgroundColor: '#E5E8EB', padding: 3, borderRadius: 14 }}>
             <button
@@ -416,22 +365,6 @@ export const TossMiniAppView: React.FC<TossMiniAppViewProps> = ({ onSaveItem, on
             >
               🙏 중보 기도
             </button>
-            <button
-              onClick={() => setActiveTab('music')}
-              style={{
-                flex: 1,
-                padding: '8px 0',
-                border: 'none',
-                borderRadius: 12,
-                backgroundColor: activeTab === 'music' ? '#FFFFFF' : 'transparent',
-                color: activeTab === 'music' ? '#191F28' : '#8B95A1',
-                fontSize: '0.85rem',
-                fontWeight: 700,
-                cursor: 'pointer'
-              }}
-            >
-              🎵 오디오/찬양
-            </button>
           </div>
         )}
 
@@ -449,14 +382,36 @@ export const TossMiniAppView: React.FC<TossMiniAppViewProps> = ({ onSaveItem, on
               gap: 16
             }}
           >
-            {/* Passage Header */}
-            <div style={{ backgroundColor: 'rgba(49, 130, 246, 0.08)', padding: 12, borderRadius: 12 }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#3182F6', marginBottom: 2 }}>
-                📖 오늘의 성경 본문
+            {/* Passage Header & Speech TTS Button */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'rgba(49, 130, 246, 0.08)', padding: 12, borderRadius: 12 }}>
+              <div>
+                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#3182F6', marginBottom: 2 }}>
+                  📖 오늘의 성경 본문
+                </div>
+                <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#191F28' }}>
+                  {sermonResult.passage}
+                </div>
               </div>
-              <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#191F28' }}>
-                {sermonResult.passage}
-              </div>
+
+              <button
+                onClick={handleToggleSpeech}
+                style={{
+                  backgroundColor: isSpeaking ? '#191F28' : '#3182F6',
+                  color: '#FFFFFF',
+                  border: 'none',
+                  borderRadius: 12,
+                  padding: '8px 12px',
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 4
+                }}
+              >
+                {isSpeaking ? <VolumeX size={16} /> : <Volume2 size={16} />}
+                {isSpeaking ? '중지' : '음성 낭독'}
+              </button>
             </div>
 
             {/* Hook */}
@@ -551,90 +506,6 @@ export const TossMiniAppView: React.FC<TossMiniAppViewProps> = ({ onSaveItem, on
                   이 시대를 살아가는 크리스천 청지기로서 삶의 자리에서 예수님의 사랑과 복음의 빛을 실천하게 하소서.
                 </div>
               </div>
-            </div>
-          </div>
-        )}
-
-        {/* Tab 3: Dual Audio Player */}
-        {sermonResult && activeTab === 'music' && (
-          <div
-            style={{
-              backgroundColor: '#FFFFFF',
-              borderRadius: 20,
-              padding: 20,
-              boxShadow: '0 4px 16px rgba(0,0,0,0.04)',
-              border: '1px solid #E5E8EB',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 16
-            }}
-          >
-            <div style={{ fontSize: '1rem', fontWeight: 700, color: '#191F28' }}>
-              🎧 묵상 오디오 스트리밍
-            </div>
-
-            {/* Track 1: TTS Speech */}
-            <div style={{ backgroundColor: '#F2F4F6', padding: 14, borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div>
-                <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#191F28' }}>
-                  🔊 3분 묵상 글 음성 낭독 (TTS)
-                </div>
-                <div style={{ fontSize: '0.75rem', color: '#8B95A1', marginTop: 2 }}>
-                  출퇴근길을 위한 차분한 낭독 서비스
-                </div>
-              </div>
-
-              <button
-                onClick={handleToggleSpeech}
-                style={{
-                  backgroundColor: isSpeaking ? '#191F28' : '#3182F6',
-                  color: '#FFFFFF',
-                  border: 'none',
-                  borderRadius: 12,
-                  padding: '8px 14px',
-                  fontSize: '0.8rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6
-                }}
-              >
-                {isSpeaking ? <VolumeX size={16} /> : <Volume2 size={16} />}
-                {isSpeaking ? '중지' : '듣기'}
-              </button>
-            </div>
-
-            {/* Track 2: Sohyang AI Vocal Praise */}
-            <div style={{ backgroundColor: 'rgba(236, 72, 153, 0.08)', padding: 14, borderRadius: 16, border: '1px solid rgba(236, 72, 153, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div>
-                <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#ec4899' }}>
-                  🎵 소향 AI 찬송가 (405장 "나 같은 죄인 살리신")
-                </div>
-                <div style={{ fontSize: '0.75rem', color: '#8B95A1', marginTop: 2 }}>
-                  소향 AI 보컬 가창 음원 감상
-                </div>
-              </div>
-
-              <button
-                onClick={handleToggleMusic}
-                style={{
-                  backgroundColor: isPlayingMusic ? '#191F28' : '#ec4899',
-                  color: '#FFFFFF',
-                  border: 'none',
-                  borderRadius: 12,
-                  padding: '8px 14px',
-                  fontSize: '0.8rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6
-                }}
-              >
-                {isPlayingMusic ? <Pause size={16} /> : <Music size={16} />}
-                {isPlayingMusic ? '정지' : '찬양'}
-              </button>
             </div>
           </div>
         )}

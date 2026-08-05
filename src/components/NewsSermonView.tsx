@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NewsRssService, NewsItem } from '../services/newsRssService';
 import { SavedJournalItem, SermonResult } from '../types';
 import { DeepSeekService } from '../services/deepseekService';
@@ -13,8 +13,6 @@ import {
   Mic,
   Volume2,
   VolumeX,
-  Pause,
-  Music,
   Share2,
   HeartHandshake,
   BookOpen,
@@ -38,28 +36,17 @@ export const NewsSermonView: React.FC<NewsSermonViewProps> = ({ onSaveItem }) =>
   const [copied, setCopied] = useState(false);
   const [refreshToast, setRefreshToast] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [isPlayingMusic, setIsPlayingMusic] = useState(false);
 
-  // Audio element reference for Sohyang AI Praise track
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  // Clean up speech and audio on unmount
+  // Clean up speech on unmount
   useEffect(() => {
     return () => {
       SpeechService.stop();
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
     };
   }, []);
 
   const loadNews = async (isManualClick = false) => {
     SpeechService.stop();
     setIsSpeaking(false);
-    if (audioRef.current) {
-      audioRef.current.pause();
-      setIsPlayingMusic(false);
-    }
     setLoadingNews(true);
     try {
       const data = await NewsRssService.fetchLatestNews();
@@ -84,10 +71,6 @@ export const NewsSermonView: React.FC<NewsSermonViewProps> = ({ onSaveItem }) =>
   const handleGenerateNewsQT = async (news: NewsItem) => {
     SpeechService.stop();
     setIsSpeaking(false);
-    if (audioRef.current) {
-      audioRef.current.pause();
-      setIsPlayingMusic(false);
-    }
     setGenerating(true);
     setSaved(false);
     setFullScript(null);
@@ -103,7 +86,7 @@ export const NewsSermonView: React.FC<NewsSermonViewProps> = ({ onSaveItem }) =>
         exegesisText = '기술 혁신의 격변 속에서, 성도는 세월을 아끼고 하나님이 주신 문화 대명령과 영적 분별력을 지켜야 합니다.';
       } else if (news.category === '경제/금융') {
         matchedPassage = '디모데전서 6:6-10 / 로마서 8:32';
-        exegesisText = '재정적 불확실성 속에서 성도의 안전지대는 물질의 많고 적음이 아닌, 아들을 아끼지 않으신 하나님의 신실한 공급하심입니다.';
+        exegesisText = '재정적 불확실성 속에서 성도의 안전지대는 물질의 많고 적음이 아닌, 아들을 아끼지 않으신 하나님의 신실하심입니다.';
       } else if (news.category === '사회/문화') {
         matchedPassage = '시편 142:1-5 / 히브리서 4:15-16';
         exegesisText = '디지털 세상의 소외감과 관계의 상처 속에서, 우리의 고통을 친히 체휼하신 대제사장 예수 그리스도의 동행에 소망이 있습니다.';
@@ -156,13 +139,8 @@ export const NewsSermonView: React.FC<NewsSermonViewProps> = ({ onSaveItem }) =>
     }
   };
 
-  // TTS Speech Control (Track 1)
+  // TTS Speech Control
   const handleToggleSpeech = () => {
-    if (isPlayingMusic && audioRef.current) {
-      audioRef.current.pause();
-      setIsPlayingMusic(false);
-    }
-
     if (isSpeaking) {
       SpeechService.stop();
       setIsSpeaking(false);
@@ -179,28 +157,6 @@ export const NewsSermonView: React.FC<NewsSermonViewProps> = ({ onSaveItem }) =>
           () => setIsSpeaking(false),
           () => setIsSpeaking(false)
         );
-      }
-    }
-  };
-
-  // Sohyang AI Vocal Praise Audio Control (Track 2)
-  const handleToggleMusic = () => {
-    if (isSpeaking) {
-      SpeechService.stop();
-      setIsSpeaking(false);
-    }
-
-    if (audioRef.current) {
-      if (isPlayingMusic) {
-        audioRef.current.pause();
-        setIsPlayingMusic(false);
-      } else {
-        audioRef.current.play().then(() => {
-          setIsPlayingMusic(true);
-        }).catch(err => {
-          console.log('Audio playback fallback error:', err);
-          setIsPlayingMusic(false);
-        });
       }
     }
   };
@@ -229,14 +185,6 @@ export const NewsSermonView: React.FC<NewsSermonViewProps> = ({ onSaveItem }) =>
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
-      {/* Hidden audio element for Sohyang AI Praise MP3 */}
-      <audio
-        ref={audioRef}
-        src="/sohyang_hymn_405.mp3"
-        onEnded={() => setIsPlayingMusic(false)}
-        preload="metadata"
-      />
-
       {/* Refresh Notification Toast */}
       {refreshToast && (
         <div className="animate-fade-in" style={{ background: 'var(--color-primary)', color: '#0f172a', padding: '10px 16px', borderRadius: 'var(--radius-md)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.9rem', boxShadow: '0 4px 12px rgba(245, 158, 11, 0.4)' }}>
@@ -272,7 +220,7 @@ export const NewsSermonView: React.FC<NewsSermonViewProps> = ({ onSaveItem }) =>
                 오늘의 시사 묵상(QT)
               </h2>
               <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', marginTop: 2 }}>
-                "세상 소식은 뉴스에서, 신앙의 통찰은 말씀에서" — 시사 뉴스를 성경적 지혜, 기도문, 묵상 찬양으로 풀어냅니다.
+                "세상 소식은 뉴스에서, 신앙의 통찰은 말씀에서" — 시사 뉴스를 성경적 지혜와 기도문으로 풀어냅니다.
               </p>
             </div>
           </div>
@@ -335,7 +283,7 @@ export const NewsSermonView: React.FC<NewsSermonViewProps> = ({ onSaveItem }) =>
         </div>
       </div>
 
-      {/* QT Message & Audio Controls */}
+      {/* QT Message & Speech Controls */}
       {sermonResult && selectedNews && (
         <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
           <div className="glass-panel" style={{ padding: 'var(--space-xl)', borderTop: '4px solid var(--color-primary)' }}>
@@ -352,7 +300,7 @@ export const NewsSermonView: React.FC<NewsSermonViewProps> = ({ onSaveItem }) =>
               </div>
 
               <div style={{ display: 'flex', gap: 'var(--space-xs)', flexWrap: 'wrap' }}>
-                {/* Track 1: TTS Speech Reading Button */}
+                {/* TTS Speech Reading Button */}
                 <button
                   onClick={handleToggleSpeech}
                   className={isSpeaking ? 'btn-primary animate-pulse-gold' : 'btn-secondary'}
@@ -360,16 +308,6 @@ export const NewsSermonView: React.FC<NewsSermonViewProps> = ({ onSaveItem }) =>
                 >
                   {isSpeaking ? <VolumeX size={16} /> : <Volume2 size={16} />}
                   {isSpeaking ? '⏹️ 낭독 중지' : '🔊 묵상 글 낭독(TTS)'}
-                </button>
-
-                {/* Track 2: Sohyang AI Praise Vocal Audio Button */}
-                <button
-                  onClick={handleToggleMusic}
-                  className={isPlayingMusic ? 'btn-primary animate-pulse-gold' : 'btn-secondary'}
-                  style={{ padding: '6px 12px', fontSize: '0.85rem', background: isPlayingMusic ? '#ec4899' : undefined, color: isPlayingMusic ? '#ffffff' : undefined, border: isPlayingMusic ? 'none' : undefined }}
-                >
-                  {isPlayingMusic ? <Pause size={16} /> : <Music size={16} />}
-                  {isPlayingMusic ? '⏸️ 소향 찬양 정지' : '🎵 소향 AI 찬송가 듣기'}
                 </button>
 
                 <button onClick={handleGenerateFullNewsScript} disabled={loadingScript} className="btn-primary" style={{ padding: '6px 12px', fontSize: '0.85rem' }}>
@@ -471,9 +409,9 @@ export const NewsSermonView: React.FC<NewsSermonViewProps> = ({ onSaveItem }) =>
                   </div>
                 </div>
 
-                {/* 3 Intercession Prayer Points Section for Christian Audience */}
-                <div style={{ background: 'rgba(236, 72, 153, 0.08)', border: '1px solid rgba(236, 72, 153, 0.25)', padding: 'var(--space-lg)', borderRadius: 'var(--radius-md)', marginBottom: 'var(--space-lg)' }}>
-                  <h4 style={{ fontSize: '1rem', fontWeight: 700, color: '#ec4899', marginBottom: 'var(--space-sm)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                {/* 3 Intercession Prayer Points Section */}
+                <div style={{ background: 'rgba(59, 130, 246, 0.08)', border: '1px solid rgba(59, 130, 246, 0.25)', padding: 'var(--space-lg)', borderRadius: 'var(--radius-md)', marginBottom: 'var(--space-lg)' }}>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 700, color: '#3b82f6', marginBottom: 'var(--space-sm)', display: 'flex', alignItems: 'center', gap: 6 }}>
                     <HeartHandshake size={20} /> 🙏 오늘 세상을 위한 3가지 중보기도
                   </h4>
                   <ul style={{ paddingLeft: '1.2rem', margin: 0, fontSize: '0.875rem', color: 'var(--color-text-main)', lineHeight: 1.8 }}>
