@@ -96,7 +96,7 @@ export const Header: React.FC<HeaderProps> = ({
             className={activeTab === 'news_sermon' ? 'btn-primary' : 'btn-secondary'}
             style={{ padding: '6px 12px', fontSize: '0.8rem', minHeight: 36, whiteSpace: 'nowrap' }}
           >
-            <Newspaper size={15} /> 📰 실시간 뉴스 설교
+            <Newspaper size={15} /> 🕊️ 오늘의 시사 묵상(QT)
           </button>
           <button
             onClick={() => setActiveTab('counseling')}

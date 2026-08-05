@@ -1,0 +1,44 @@
+# 오늘의 시사 묵상(QT) 서비스 구현 계획서
+
+토스(Toss) 인앱 환경 및 웹 앱 내 기존 '실시간 뉴스 설교' 기능을 기독교인 핵심 타깃 서비스인 **`오늘의 시사 묵상(QT)`**으로 전면 개편하고, 낭독(TTS)과 찬양 가창(Sohyang AI SVS)이 결합된 투트랙 오디오 경험을 구축합니다.
+
+---
+
+## User Review Required
+
+> [!IMPORTANT]
+> - **서비스명 변경**: 기존 '실시간 뉴스 설교' 탭 및 UI 브랜딩을 **`오늘의 시사 묵상(QT)`**으로 변경합니다.
+> - **오디오 투트랙 엔진**:
+>   1. **묵상 글 낭독**: 고품질 낭독 전용 TTS (Google Cloud TTS / 브라우저 Web Speech API 차분한 아나운서 음성).
+>   2. **묵상 찬양 가창**: 소향 AI 보컬 모델(`Sohyang_CCM_AI.pth` 및 가창 음원 MP3 스트리밍)로 자동 연결.
+
+---
+
+## Proposed Changes
+
+### [Frontend & UI Branding]
+
+#### [MODIFY] [Header.tsx](file:///d:/sermon/src/components/Header.tsx)
+- 네비게이션 탭의 버튼 명칭을 `📰 실시간 뉴스 설교`에서 `🕊️ 오늘의 시사 묵상(QT)`으로 업데이트.
+
+#### [MODIFY] [NewsSermonView.tsx](file:///d:/sermon/src/components/NewsSermonView.tsx)
+- 서비스 타깃과 헤더 브랜딩을 **`오늘의 시사 묵상(QT)`**으로 변경.
+- **슬로건 추가**: *"세상 소식은 뉴스에서, 신앙의 통찰은 말씀에서"*
+- **카드 구성**:
+  1. **실시간 핫이슈 & 본문 말씀**: 큐레이션 뉴스 + 성경 구절 카드
+  2. **3분 AI 시사 묵상**: 3줄 요약 + 묵상 본문 (개혁주의/복음주의 성경적 통찰)
+  3. **오늘 세상을 위한 3가지 중보 기도제목**: 실시간 이웃/국가/사회를 위한 기도 포인트
+  4. **투트랙 오디오 컨트롤러**: 묵상 글 낭독(TTS) 및 소향 AI 묵상 찬송가 오디오 플레이어 연동
+  5. **성도 나눔/공유 기능**: 토스/카카오톡 1초 공유 카드 생성
+
+---
+
+## Verification Plan
+
+### Automated & Build Verification
+- `npm run build` 또는 `npx vite build`로 타입스크립트 컴파일 및 빌드 검증.
+
+### Manual Verification
+- `NewsSermonView.tsx`에서 '오늘의 시사 묵상(QT)' 네비게이션 진입 및 카드 렌더링 확인.
+- 실시간 뉴스 선택 시 성경 본문 맵핑, 3분 묵상 본문, 3가지 기도제목 정상 출력 확인.
+- 묵상 음성 낭독(TTS) 버튼과 소향 AI 찬송가 오디오 플레이어가 원활히 연동되는지 확인.
