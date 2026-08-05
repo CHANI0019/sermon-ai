@@ -13,11 +13,16 @@ import { SavedJournalView } from './components/SavedJournalView';
 import { GuardrailsView } from './components/GuardrailsView';
 import { DeviceStatsView } from './components/DeviceStatsView';
 import { SvsPraiseView } from './components/SvsPraiseView';
+import { TossMiniAppView } from './components/TossMiniAppView';
 
 export const App: React.FC = () => {
   const device = useDevice();
   const [activeTab, setActiveTab] = useState<TabType>('sermon');
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+
+  // Check if opened via Toss Mini-App URL parameter (?toss=true or /toss)
+  const isTossUrl = typeof window !== 'undefined' && (window.location.search.includes('toss=true') || window.location.pathname.startsWith('/toss'));
+  const [isTossMode, setIsTossMode] = useState(isTossUrl);
 
   // Modals visibility
   const [showInAppModal, setShowInAppModal] = useState(false);
@@ -51,13 +56,13 @@ export const App: React.FC = () => {
 
   // Trigger modal visibility on device detection
   useEffect(() => {
-    if (device.isInAppBrowser) {
+    if (device.isInAppBrowser && !isTossMode) {
       setShowInAppModal(true);
-    } else if (device.isIOS && !device.isPWA) {
+    } else if (device.isIOS && !device.isPWA && !isTossMode) {
       const timer = setTimeout(() => setShowIOSSheet(true), 2500);
       return () => clearTimeout(timer);
     }
-  }, [device.isInAppBrowser, device.isIOS, device.isPWA]);
+  }, [device.isInAppBrowser, device.isIOS, device.isPWA, isTossMode]);
 
   // Save new item handler
   const handleSaveItem = (item: Omit<SavedJournalItem, 'id' | 'createdAt'>) => {
@@ -101,9 +106,29 @@ export const App: React.FC = () => {
     }
   };
 
+  // 📱 Render Dedicated Standalone Toss Mini-App View if Toss mode active
+  if (isTossMode) {
+    return (
+      <TossMiniAppView
+        onSaveItem={handleSaveItem}
+        onCloseMiniApp={() => setIsTossMode(false)}
+      />
+    );
+  }
+
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--bg-primary)' }}>
-      {/* Top Header */}
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--bg-main)', color: 'var(--color-text-main)' }}>
+      {/* Top Banner Notice to Launch Toss Dedicated Mini-App Mode */}
+      <div style={{ backgroundColor: '#3182F6', color: '#FFFFFF', padding: '8px 16px', fontSize: '0.8rem', textAlign: 'center', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+        <span>📱 토스(Toss) 인앱 배포 전용 미니앱(TDS 디자인)을 체험해보시겠어요?</span>
+        <button
+          onClick={() => setIsTossMode(true)}
+          style={{ backgroundColor: '#FFFFFF', color: '#3182F6', border: 'none', borderRadius: 12, padding: '4px 10px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+        >
+          토스 미니앱 보기
+        </button>
+      </div>
+
       <Header
         device={device}
         activeTab={activeTab}
@@ -115,7 +140,6 @@ export const App: React.FC = () => {
         savedCount={savedItems.length}
       />
 
-      {/* Main Content Area */}
       <main style={{ flex: 1, padding: 'var(--space-lg) 0' }}>
         <div className="container">
           {/* PWA Install Banner */}
@@ -171,7 +195,7 @@ export const App: React.FC = () => {
             본 시스템은 성경의 구속사적 전체 맥락(Christ-centered)과 정통 복음주의 신학 고백에 기반합니다. 영적 은혜와 진정한 위로는 성령 하나님의 역사와 성도님이 속하신 지역 교회 공동체를 통해 이루어집니다.
           </p>
           <p style={{ fontSize: '0.75rem', opacity: 0.7 }}>
-            © {new Date().getFullYear()} LOGOS System. Real-time RSS News Sermon Generator Ready.
+            © {new Date().getFullYear()} LOGOS System. Toss In-App Mini-App Supported.
           </p>
         </div>
       </footer>

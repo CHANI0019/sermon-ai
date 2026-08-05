@@ -1,0 +1,45 @@
+# 토스(Toss) 인앱 전용 미니앱(Toss Apps) 구축 구현 계획서
+
+토스(Toss) 인앱 플랫폼(Toss Apps / 토스 미니앱)에 독립적으로 배포할 수 있도록 **TDS (Toss Design System)** 가이드라인에 완벽히 부합하는 단독 미니앱 뷰(`TossMiniAppView.tsx`) 및 전용 CSS 테마를 구축합니다.
+
+---
+
+## User Review Required
+
+> [!IMPORTANT]
+> - **TDS (Toss Design System) 디자인 반영**:
+>   - Main Primary Color: **`Toss Blue (#3182F6)`**
+>   - Background: **`Toss Light Gray (#F2F4F6)`**
+>   - Surface/Card: **`White (#FFFFFF)`**, Border Radius `20px`
+>   - Text: **`Toss Dark (#191F28)`**, Muted Text **`(#8B95A1)`**
+>   - Typography: **`Pretendard`** 기반의 토스 특유의 친근한 마이크로카피 적용
+> - **독립 배포형 미니앱 레이아웃 (`TossMiniAppView.tsx`)**:
+>   - 복잡한 PC 헤더나 부수적인 메뉴를 제거하고, 토스 앱 내부 WebView에 최적화된 **모바일 퍼스트 단일 스크린 레이아웃** 제공.
+>   - 상단 토스 스타일 네이티브 헤더바 (뒤로가기, 타이틀, 1초 카톡/토스 공유 버튼).
+
+---
+
+## Proposed Changes
+
+### [Toss Design System & Standalone Mini-App Component]
+
+#### [NEW] [TossMiniAppView.tsx](file:///d:/sermon/src/components/TossMiniAppView.tsx)
+- 토스 앱인앱 배포 전용 미니앱 뷰 구현.
+- 토스 블루(#3182F6) 및 TDS 카드 스타일 렌더링.
+- 아침 3분 시사 묵상(QT), 중보기도 3포인트, 투트랙 오디오(TTS 낭독 + 소향 AI 찬송가 오디오) 완벽 연동.
+
+#### [NEW] [toss.html](file:///d:/sermon/toss.html)
+- 토스 미니앱 단독 배포용 전용 Entry Point (토스 앱 WebView 딥링크 지원).
+
+#### [MODIFY] [App.tsx](file:///d:/sermon/src/App.tsx)
+- URL 파라미터(`?toss=true` 또는 `/toss` 진입 시) 토스 전용 미니앱 모드로 단독 렌더링되도록 스위치 연동.
+
+---
+
+## Verification Plan
+
+### Automated & Build Verification
+- `npm run build`로 단독 미니앱 번들 및 HTML 빌드 정상 완료 검증.
+
+### Manual Verification
+- `http://localhost:5173/?toss=true` 접속 시 토스(Toss) 앱과 동일한 화면 렌더링 확인.

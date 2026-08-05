@@ -1,0 +1,30 @@
+# 토스(Toss) 인앱 배포 전용 미니앱(TDS 디자인) 구축 완료 보고서
+
+토스(Toss) 인앱 플랫폼(Toss Apps / 토스 미니앱)에 즉시 정식 배포 및 등록할 수 있도록 **TDS (Toss Design System)** 가이드라인에 완벽히 맞춘 **독립형 미니앱 뷰(`TossMiniAppView.tsx`)**가 완성되었습니다.
+
+---
+
+## 🎨 토스 디자인 시스템 (TDS) 반영 명세
+
+1. **컬러 시스템**:
+   - **Toss Blue (`#3182F6`)**: 토스 공식 프라이머리 블루 (상단 헤더 뱃지, 주요 액션 버튼)
+   - **Toss Background (`#F2F4F6`)**: 토스 앱 내부 고유의 부드럽고 가벼운 그레이 모바일 배경
+   - **Toss Card Surface (`#FFFFFF`)**: `border-radius: 20px`와 미세한 그림자(`0 4px 16px rgba(0,0,0,0.04)`) 카드 구조
+   - **Toss Text (`#191F28`)**: 가독성 높은 다크 그레이 텍스트 및 서브 텍스트(`#8B95A1`)
+
+2. **독립 배포형 모바일 UX (`TossMiniAppView.tsx`)**:
+   - 상단 토스 네이티브 스타일 Sticky 헤더바 (뒤로가기, 타이틀, 새로고침)
+   - 뉴스 칩 선택기 (가로 스크롤 가능한 직관적 시사 이슈 태그)
+   - 3분 묵상 / 중보기도 / 투트랙 오디오 탭 스위치
+   - 토스/성도 공유하기 하단 대형 둥근 액션 버튼 (1초 복사/공유)
+
+3. **배포 딥링크 & URL 스위치 연동**:
+   - `URL?toss=true` 또는 `/toss` 파라미터 접속 시 토스 전용 독립 미니앱 모드로 단독 실행.
+   - 웹사이트 메인 상단에서 `[토스 미니앱 보기]` 버튼으로 언제든지 사전 체험 가능.
+
+---
+
+## 📁 주요 수정 및 신규 파일
+
+- [TossMiniAppView.tsx](file:///d:/sermon/src/components/TossMiniAppView.tsx): 토스 전용 독립 미니앱 컴포넌트 [NEW]
+- [App.tsx](file:///d:/sermon/src/App.tsx): URL 파라미터(`?toss=true`) 및 상단 배너 스위치 연동 [MODIFY]
