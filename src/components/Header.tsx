@@ -1,6 +1,6 @@
 import React from 'react';
-import { DeviceInfo, TabType } from '../types';
-import { BookOpen, HeartHandshake, ShieldCheck, Cpu, Smartphone, Monitor, Download, Sun, Moon, Bookmark, Newspaper, Music } from 'lucide-react';
+import { DeviceInfo, TabType, User } from '../types';
+import { BookOpen, HeartHandshake, ShieldCheck, Cpu, Smartphone, Monitor, Download, Sun, Moon, Bookmark, Newspaper, Music, LogOut, UserCheck } from 'lucide-react';
 
 interface HeaderProps {
   device: DeviceInfo;
@@ -11,6 +11,8 @@ interface HeaderProps {
   onOpenQR: () => void;
   onTriggerInstall: () => void;
   savedCount: number;
+  currentUser: User | null;
+  onLogout: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -21,7 +23,9 @@ export const Header: React.FC<HeaderProps> = ({
   toggleTheme,
   onOpenQR,
   onTriggerInstall,
-  savedCount
+  savedCount,
+  currentUser,
+  onLogout
 }) => {
   return (
     <header style={{ borderBottom: '1px solid var(--color-border)', backgroundColor: 'var(--bg-card)', backdropFilter: 'blur(10px)', position: 'sticky', top: 0, zIndex: 40 }}>
@@ -52,8 +56,39 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          {/* Controls & Device Indicator */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
+          {/* Controls & Device Indicator & User Badge */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)', flexWrap: 'wrap' }}>
+            {/* User Profile Badge */}
+            {currentUser && (
+              <div className="glass-panel" style={{
+                padding: '4px 12px',
+                borderRadius: 'var(--radius-pill)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                fontSize: '0.8rem',
+                border: '1px solid rgba(245, 158, 11, 0.4)',
+                backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                color: 'var(--color-text-main)'
+              }}>
+                <div style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: '50%',
+                  background: currentUser.avatarColor || '#f59e0b',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#fff',
+                  fontSize: '0.65rem'
+                }}>
+                  <UserCheck size={12} />
+                </div>
+                <span style={{ fontWeight: 700, color: 'var(--color-accent)' }}>{currentUser.name}</span>
+                <span style={{ fontSize: '0.7rem', opacity: 0.8, borderLeft: '1px solid var(--color-border)', paddingLeft: 6 }}>{currentUser.id}</span>
+              </div>
+            )}
+
             {/* Device Badge */}
             <div className="glass-panel" style={{ padding: '4px 10px', borderRadius: 'var(--radius-pill)', display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.8rem', color: 'var(--color-primary)' }}>
               {device.isMobile ? <Smartphone size={14} /> : <Monitor size={14} />}
@@ -79,6 +114,27 @@ export const Header: React.FC<HeaderProps> = ({
             <button onClick={toggleTheme} className="touch-target" style={{ background: 'none', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', color: 'var(--color-text-main)', cursor: 'pointer', width: 36, height: 36 }} title="테마 변경">
               {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
             </button>
+
+            {/* Logout Button */}
+            {currentUser && (
+              <button
+                onClick={onLogout}
+                className="btn-secondary"
+                style={{
+                  padding: '6px 12px',
+                  fontSize: '0.8rem',
+                  minHeight: 36,
+                  borderColor: 'rgba(239, 68, 68, 0.4)',
+                  color: '#f87171',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 4
+                }}
+                title="로그아웃 및 접근 차단"
+              >
+                <LogOut size={14} /> 로그아웃
+              </button>
+            )}
           </div>
         </div>
 

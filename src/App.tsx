@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDevice } from './hooks/useDevice';
-import { TabType, SavedJournalItem } from './types';
+import { TabType, SavedJournalItem, User } from './types';
 import { Header } from './components/Header';
 import { InAppEscapeModal } from './components/InAppEscapeModal';
 import { IOSInstallBottomSheet } from './components/IOSInstallBottomSheet';
@@ -14,11 +14,21 @@ import { GuardrailsView } from './components/GuardrailsView';
 import { DeviceStatsView } from './components/DeviceStatsView';
 import { SvsPraiseView } from './components/SvsPraiseView';
 import { TossMiniAppView } from './components/TossMiniAppView';
+import { LoginModal } from './components/LoginModal';
+import { getStoredUserSession, clearUserSession } from './services/authService';
 
 export const App: React.FC = () => {
   const device = useDevice();
   const [activeTab, setActiveTab] = useState<TabType>('sermon');
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+
+  // 🔒 Authentication State (Persisted in localStorage for automatic entry)
+  const [currentUser, setCurrentUser] = useState<User | null>(() => getStoredUserSession());
+
+  const handleLogout = () => {
+    clearUserSession();
+    setCurrentUser(null);
+  };
 
   // Check if opened via Toss Mini-App URL parameter (?toss=true or /toss)
   const isTossUrl = typeof window !== 'undefined' && (window.location.search.includes('toss=true') || window.location.pathname.startsWith('/toss'));
@@ -118,6 +128,11 @@ export const App: React.FC = () => {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--bg-main)', color: 'var(--color-text-main)' }}>
+      {/* 🔒 Full Screen Auth Lock Screen if unauthenticated */}
+      {!currentUser && (
+        <LoginModal onLoginSuccess={(user) => setCurrentUser(user)} />
+      )}
+
       {/* Top Banner Notice to Launch Toss Dedicated Mini-App Mode */}
       <div style={{ backgroundColor: '#3182F6', color: '#FFFFFF', padding: '8px 16px', fontSize: '0.8rem', textAlign: 'center', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
         <span>📱 토스(Toss) 인앱 배포 전용 미니앱(TDS 디자인)을 체험해보시겠어요?</span>
@@ -138,6 +153,8 @@ export const App: React.FC = () => {
         onOpenQR={() => setShowDesktopQR(true)}
         onTriggerInstall={handleTriggerInstall}
         savedCount={savedItems.length}
+        currentUser={currentUser}
+        onLogout={handleLogout}
       />
 
       <main style={{ flex: 1, padding: 'var(--space-lg) 0' }}>

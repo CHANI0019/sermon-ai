@@ -1,3 +1,10 @@
+export interface User {
+  id: string;
+  name: string;
+  role: string;
+  avatarColor?: string;
+}
+
 export interface DeviceInfo {
   deviceType: 'Android' | 'iPhone' | 'iPad' | 'Windows' | 'macOS' | 'Linux' | 'Tablet' | 'Unknown';
   os: string;
