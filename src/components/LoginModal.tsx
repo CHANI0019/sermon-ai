@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { User } from '../types';
-import { authenticateUser, quickAutoLogin } from '../services/authService';
-import { Lock, ShieldCheck, Key, UserCheck, ArrowRight, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
+import { authenticateUser } from '../services/authService';
+import { Lock, ShieldCheck, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
 
 interface LoginModalProps {
   onLoginSuccess: (user: User) => void;
@@ -30,17 +30,6 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onLoginSuccess }) => {
     }, 300);
   };
 
-  // ⚡ 원클릭 자동 접속 처리
-  const handleQuickLogin = (userId: 'danari' | 'test') => {
-    setErrorMsg(null);
-    setIsLoading(true);
-    setTimeout(() => {
-      const user = quickAutoLogin(userId);
-      setIsLoading(false);
-      onLoginSuccess(user);
-    }, 250);
-  };
-
   return (
     <div style={{
       position: 'fixed',
@@ -56,7 +45,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onLoginSuccess }) => {
     }}>
       <div className="glass-panel" style={{
         width: '100%',
-        maxWidth: 480,
+        maxWidth: 440,
         borderRadius: 24,
         padding: 'var(--space-xl)',
         boxShadow: '0 20px 50px rgba(0, 0, 0, 0.6), 0 0 40px rgba(245, 158, 11, 0.15)',
@@ -101,96 +90,13 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onLoginSuccess }) => {
           color: '#e2e8f0'
         }}>
           <p style={{ fontWeight: 600, color: '#fbbf24', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Sparkles size={14} /> 인가된 사용자 전용 안내
+            <Sparkles size={14} /> 보안 인가 안내
           </p>
-          본 플랫폼은 보안 인가된 목회자 및 허가 회원만 이용할 수 있습니다. 등록된 아이디로 로그인하거나 아래의 빠른 자동 접속 버튼을 눌러 들어오세요.
-        </div>
-
-        {/* ⚡ Quick Auto Login Section (원클릭 자동 접속) */}
-        <div style={{ marginBottom: 'var(--space-lg)' }}>
-          <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#fbbf24', marginBottom: 10 }}>
-            ⚡ 허가된 계정 원클릭 자동 접속
-          </label>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <button
-              type="button"
-              onClick={() => handleQuickLogin('danari')}
-              disabled={isLoading}
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                borderRadius: 14,
-                border: '1px solid rgba(245, 158, 11, 0.4)',
-                background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.2))',
-                color: '#ffffff',
-                fontWeight: 700,
-                fontSize: '0.9rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                boxShadow: '0 4px 12px rgba(245, 158, 11, 0.15)'
-              }}
-              className="quick-auth-btn"
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ width: 28, height: 28, borderRadius: 8, background: '#f59e0b', color: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <UserCheck size={16} />
-                </div>
-                <div style={{ textAlign: 'left' }}>
-                  <div>danari 계정으로 접속</div>
-                  <div style={{ fontSize: '0.72rem', color: '#cbd5e1', fontWeight: 400 }}>ID: danari | PW: mylove*0019</div>
-                </div>
-              </div>
-              <ArrowRight size={18} style={{ color: '#f59e0b' }} />
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleQuickLogin('test')}
-              disabled={isLoading}
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                borderRadius: 14,
-                border: '1px solid rgba(59, 130, 246, 0.4)',
-                background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(29, 78, 216, 0.2))',
-                color: '#ffffff',
-                fontWeight: 700,
-                fontSize: '0.9rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                boxShadow: '0 4px 12px rgba(59, 130, 246, 0.15)'
-              }}
-              className="quick-auth-btn"
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ width: 28, height: 28, borderRadius: 8, background: '#3b82f6', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Key size={16} />
-                </div>
-                <div style={{ textAlign: 'left' }}>
-                  <div>test 계정으로 접속</div>
-                  <div style={{ fontSize: '0.72rem', color: '#cbd5e1', fontWeight: 400 }}>ID: test | PW: test</div>
-                </div>
-              </div>
-              <ArrowRight size={18} style={{ color: '#60a5fa' }} />
-            </button>
-          </div>
-        </div>
-
-        {/* Divider */}
-        <div style={{ display: 'flex', alignItems: 'center', margin: 'var(--space-md) 0', color: '#64748b', fontSize: '0.75rem' }}>
-          <div style={{ flex: 1, height: 1, backgroundColor: 'rgba(255, 255, 255, 0.1)' }} />
-          <span style={{ padding: '0 12px' }}>또는 직접 입력하여 로그인</span>
-          <div style={{ flex: 1, height: 1, backgroundColor: 'rgba(255, 255, 255, 0.1)' }} />
+          본 플랫폼은 사전 승인된 사용자만 접근할 수 있습니다. 수여받으신 계정 아이디와 비밀번호를 입력하여 입장해 주세요.
         </div>
 
         {/* Form Login */}
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           {errorMsg && (
             <div style={{
               backgroundColor: 'rgba(239, 68, 68, 0.15)',
@@ -209,15 +115,16 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onLoginSuccess }) => {
           )}
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: '#cbd5e1', marginBottom: 6, fontWeight: 600 }}>
+            <label style={{ display: 'block', fontSize: '0.85rem', color: '#cbd5e1', marginBottom: 6, fontWeight: 600 }}>
               아이디 (ID)
             </label>
             <input
               type="text"
               value={idInput}
               onChange={(e) => setIdInput(e.target.value)}
-              placeholder="예: danari 또는 test"
+              placeholder="아이디를 입력하세요"
               required
+              autoFocus
               style={{
                 width: '100%',
                 padding: '12px 14px',
@@ -232,7 +139,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onLoginSuccess }) => {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: '#cbd5e1', marginBottom: 6, fontWeight: 600 }}>
+            <label style={{ display: 'block', fontSize: '0.85rem', color: '#cbd5e1', marginBottom: 6, fontWeight: 600 }}>
               비밀번호 (Password)
             </label>
             <input
@@ -260,11 +167,11 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onLoginSuccess }) => {
             className="btn-primary"
             style={{
               width: '100%',
-              padding: '12px',
+              padding: '13px',
               borderRadius: 12,
               fontWeight: 700,
               fontSize: '0.95rem',
-              marginTop: 6,
+              marginTop: 8,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
