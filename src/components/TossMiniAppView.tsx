@@ -44,6 +44,7 @@ export const TossMiniAppView: React.FC<TossMiniAppViewProps> = ({ onSaveItem, on
   const [copied, setCopied] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [activeTab, setActiveTab] = useState<'qt' | 'prayer'>('qt');
+  const [showMigrationModal, setShowMigrationModal] = useState(true);
 
   useEffect(() => {
     return () => {
@@ -149,6 +150,176 @@ export const TossMiniAppView: React.FC<TossMiniAppViewProps> = ({ onSaveItem, on
         paddingBottom: 40
       }}
     >
+      {/* 📢 Toss In-App Migration Notice Modal */}
+      {showMigrationModal && (
+        <div style={{
+          display: 'flex',
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(15, 23, 42, 0.85)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          zIndex: 9999999,
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 20,
+          boxSizing: 'border-box',
+          fontFamily: "-apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif"
+        }}>
+          <div style={{
+            background: '#ffffff',
+            color: '#191f28',
+            borderRadius: 28,
+            width: '100%',
+            maxWidth: 390,
+            padding: '32px 22px 26px',
+            boxShadow: '0 24px 60px rgba(0, 0, 0, 0.35)',
+            textAlign: 'center',
+            position: 'relative',
+            boxSizing: 'border-box'
+          }}>
+            <button
+              type="button"
+              onClick={() => setShowMigrationModal(false)}
+              style={{
+                position: 'absolute',
+                top: 16,
+                right: 16,
+                width: 32,
+                height: 32,
+                borderRadius: '50%',
+                border: 'none',
+                background: '#f2f4f6',
+                color: '#8b95a1',
+                fontSize: 16,
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              ✕
+            </button>
+
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '6px 14px',
+              background: '#eff6ff',
+              border: '1px solid #bfdbfe',
+              borderRadius: 20,
+              marginBottom: 14
+            }}>
+              <span style={{ fontSize: 14 }}>✨</span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: '#1d4ed8' }}>서비스 통합 이전 & 업그레이드</span>
+            </div>
+
+            <h2 style={{ fontSize: 21, fontWeight: 800, color: '#191f28', lineHeight: 1.35, margin: '0 0 10px 0', letterSpacing: -0.6 }}>
+              새로운 차세대 AI 시스템으로<br /><span style={{ color: '#3182f6' }}>공식 통합 이전</span>하였습니다!
+            </h2>
+
+            <p style={{ fontSize: 13.5, color: '#4e5968', lineHeight: 1.55, margin: '0 0 18px 0', wordBreak: 'keep-all' }}>
+              고객님께 더 빠르고 고도화된 정밀 AI 서비스를 제공해 드리기 위해, 기존 서비스를 전면 개편하여 <strong>공식 통합 웹 플랫폼(fortuneai.co.kr)</strong>으로 정식 이전 오픈하였습니다.
+            </p>
+
+            <div style={{
+              background: '#f8fafc',
+              border: '1px solid #e2e8f0',
+              borderRadius: 16,
+              padding: '13px 15px',
+              textAlign: 'left',
+              marginBottom: 20,
+              fontSize: 13
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 8 }}>
+                <span style={{ fontSize: 15 }}>🔮</span>
+                <span style={{ color: '#1e293b', fontWeight: 600 }}>10만 명리학 빅데이터 AI 사주 · 만세력</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 8 }}>
+                <span style={{ fontSize: 15 }}>💼</span>
+                <span style={{ color: '#1e293b', fontWeight: 600 }}>AI 커리어 직업 적성 & 찰떡 진로 분석</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+                <span style={{ fontSize: 15 }}>🎁</span>
+                <span style={{ color: '#2563eb', fontWeight: 700 }}>공식 사이트 방문 즉시 전 기능 무료 체험</span>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <button
+                type="button"
+                onClick={() => {
+                  window.location.href = 'https://fortuneai.co.kr/?utm_source=toss_inapp&utm_medium=sermon_modal';
+                }}
+                style={{
+                  width: '100%',
+                  padding: '15px 16px',
+                  background: 'linear-gradient(135deg, #3182f6 0%, #1b64da 100%)',
+                  color: '#ffffff',
+                  fontSize: 15.5,
+                  fontWeight: 700,
+                  border: 'none',
+                  borderRadius: 16,
+                  cursor: 'pointer',
+                  boxShadow: '0 6px 18px rgba(49, 130, 246, 0.35)'
+                }}
+              >
+                🚀 공식 천명 AI 플랫폼으로 무료 이동하기
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  const url = 'https://fortuneai.co.kr';
+                  if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(url).then(() => {
+                      alert('공식 사이트 주소(fortuneai.co.kr)가 복사되었습니다!');
+                    }).catch(() => {
+                      prompt('아래 주소를 복사하세요:', url);
+                    });
+                  } else {
+                    prompt('아래 주소를 복사하세요:', url);
+                  }
+                }}
+                style={{
+                  width: '100%',
+                  padding: '11px 14px',
+                  background: '#f2f4f6',
+                  color: '#4e5968',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  border: 'none',
+                  borderRadius: 12,
+                  cursor: 'pointer'
+                }}
+              >
+                🔗 공식 주소 복사하기 (fortuneai.co.kr)
+              </button>
+            </div>
+
+            <div style={{ marginTop: 12 }}>
+              <button
+                type="button"
+                onClick={() => setShowMigrationModal(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#8b95a1',
+                  fontSize: 12,
+                  textDecoration: 'underline',
+                  cursor: 'pointer',
+                  padding: 4
+                }}
+              >
+                현재 화면 잠시 둘러보기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Toss Native Sticky Header Bar */}
       <header
         style={{
